@@ -11,6 +11,7 @@ const {
 } = require('../utils/scraper');
 const { logger, logPerformance } = require('../utils/logger');
 const { captureException } = require('../utils/sentry');
+const messageQueueService = require('../services/messageQueueService');
 
 /**
  * Scrape athletes from all sources
@@ -148,6 +149,175 @@ exports.scrapeAthletes = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to scrape athletes',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Async scrape athletes from all sources (queues jobs for processing)
+ */
+exports.scrapeAthletesAsync = async (req, res) => {
+    const startTime = Date.now();
+    const {
+        sport = 'football',
+        year = new Date().getFullYear(),
+        location = '',
+        includeHighlights = false,
+        priority = 'normal'
+    } = req.query;
+
+    try {
+        logger.info('Starting async athlete scraping', {
+            sport,
+            year,
+            location,
+            includeHighlights,
+            priority,
+            user: req.user?.id
+        });
+
+        // Create scraping job data
+        const scrapingJob = {
+            sport,
+            year: parseInt(year),
+            location,
+            includeHighlights: includeHighlights === 'true',
+            priority,
+            userId: req.user?.id,
+            userEmail: req.user?.email,
+            jobId: `scrape-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            timestamp: new Date().toISOString()
+        };
+
+        // Queue the scraping job for async processing
+        const queueResult = await messageQueueService.sendAthleteScrapingJob(scrapingJob);
+
+        const duration = Date.now() - startTime;
+        logPerformance('queue_scraping_job', duration, {
+            jobId: scrapingJob.jobId,
+            sport,
+            year,
+            priority
+        });
+
+        res.json({
+            success: true,
+            message: 'Athlete scraping job queued successfully',
+            data: {
+                jobId: scrapingJob.jobId,
+                messageId: queueResult.MessageId,
+                estimatedDuration: '5-15 minutes',
+                status: 'queued',
+                metadata: {
+                    sport,
+                    year,
+                    location,
+                    includeHighlights,
+                    priority,
+                    queuedAt: scrapingJob.timestamp,
+                    duration
+                }
+            }
+        });
+
+    } catch (error) {
+        const duration = Date.now() - startTime;
+        logger.error('Failed to queue athlete scraping job', {
+            sport,
+            year,
+            location,
+            error: error.message,
+            duration
+        });
+
+        captureException(error, {
+            tags: { component: 'scraper', operation: 'queue_scraping_job' },
+            extra: { sport, year, location, duration }
+        });
+
+        res.status(500).json({
+            success: false,
+            message: 'Failed to queue athlete scraping job',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Get scraping job status
+ */
+exports.getScrapingJobStatus = async (req, res) => {
+    const { jobId } = req.params;
+
+    try {
+        // In a real implementation, you'd check a jobs table or Redis
+        // For now, return a mock status
+        const mockStatus = {
+            jobId,
+            status: 'processing', // queued, processing, completed, failed
+            progress: 65,
+            athletesFound: 0,
+            athletesProcessed: 0,
+            startTime: new Date(Date.now() - 300000).toISOString(), // 5 minutes ago
+            estimatedCompletion: new Date(Date.now() + 600000).toISOString(), // 10 minutes from now
+            sources: ['rivals.com', '247sports.com', 'hudl.com'],
+            sourcesCompleted: ['rivals.com'],
+            sourcesInProgress: ['247sports.com'],
+            sourcesPending: ['hudl.com']
+        };
+
+        res.json({
+            success: true,
+            data: mockStatus
+        });
+
+    } catch (error) {
+        logger.error('Failed to get scraping job status', {
+            jobId,
+            error: error.message
+        });
+
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get job status',
+            error: error.message
+        });
+    }
+};
+
+/**
+ * Get scraping statistics
+ */
+exports.getScrapingStats = async (req, res) => {
+    try {
+        const stats = await getScrapingStats();
+
+        // Add queue statistics
+        const queueStats = {
+            scraping: await messageQueueService.getQueueAttributes('SCRAPING').catch(() => ({})),
+            video: await messageQueueService.getQueueAttributes('VIDEO_PROCESSING').catch(() => ({})),
+            analytics: await messageQueueService.getQueueAttributes('ANALYTICS').catch(() => ({})),
+            notifications: await messageQueueService.getQueueAttributes('NOTIFICATIONS').catch(() => ({}))
+        };
+
+        res.json({
+            success: true,
+            data: {
+                ...stats,
+                queues: queueStats,
+                timestamp: new Date().toISOString()
+            }
+        });
+
+    } catch (error) {
+        logger.error('Failed to get scraping stats', {
+            error: error.message
+        });
+
+        res.status(500).json({
+            success: false,
+            message: 'Failed to get scraping statistics',
             error: error.message
         });
     }
@@ -394,42 +564,6 @@ exports.updateAthleteSocialMedia = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Failed to update athlete social media',
-            error: error.message
-        });
-    }
-};
-
-/**
- * Get scraping statistics
- */
-exports.getScrapingStats = async (req, res) => {
-    try {
-        const stats = getScrapingStats();
-
-        // Get database statistics
-        const totalAthletes = await Player.countDocuments();
-        const highlightedAthletes = await Player.countDocuments({ isHighlighted: true });
-        const sourceStats = await Player.aggregate([
-            { $group: { _id: '$recruitingData.source', count: { $sum: 1 } } }
-        ]);
-
-        res.json({
-            success: true,
-            data: {
-                scraping: stats,
-                database: {
-                    totalAthletes,
-                    highlightedAthletes,
-                    sourceBreakdown: sourceStats
-                }
-            }
-        });
-
-    } catch (error) {
-        logger.error('Failed to get scraping stats', { error: error.message });
-        res.status(500).json({
-            success: false,
-            message: 'Failed to get scraping statistics',
             error: error.message
         });
     }

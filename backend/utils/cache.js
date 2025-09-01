@@ -101,10 +101,89 @@ const checkRedisHealth = async () => {
   }
 };
 
+// Enhanced caching strategies for athlete discovery
+const athleteCache = {
+  // Cache athlete discovery results
+  setDiscoveryResults: async (query, results, ttl = 1800) => { // 30 minutes
+    const key = `discovery:${JSON.stringify(query)}`;
+    await redisClient.setEx(key, ttl, JSON.stringify(results));
+  },
+
+  getDiscoveryResults: async (query) => {
+    const key = `discovery:${JSON.stringify(query)}`;
+    const data = await redisClient.get(key);
+    return data ? JSON.parse(data) : null;
+  },
+
+  // Cache individual athlete profiles
+  setAthleteProfile: async (athleteId, profile, ttl = 3600) => { // 1 hour
+    const key = `athlete:${athleteId}`;
+    await redisClient.setEx(key, ttl, JSON.stringify(profile));
+  },
+
+  getAthleteProfile: async (athleteId) => {
+    const key = `athlete:${athleteId}`;
+    const data = await redisClient.get(key);
+    return data ? JSON.parse(data) : null;
+  },
+
+  // Cache search queries
+  setSearchResults: async (searchTerm, filters, results, ttl = 900) => { // 15 minutes
+    const key = `search:${searchTerm}:${JSON.stringify(filters)}`;
+    await redisClient.setEx(key, ttl, JSON.stringify(results));
+  },
+
+  getSearchResults: async (searchTerm, filters) => {
+    const key = `search:${searchTerm}:${JSON.stringify(filters)}`;
+    const data = await redisClient.get(key);
+    return data ? JSON.parse(data) : null;
+  },
+
+  // Cache recruiting rankings
+  setRecruitingRankings: async (year, position, rankings, ttl = 7200) => { // 2 hours
+    const key = `rankings:${year}:${position}`;
+    await redisClient.setEx(key, ttl, JSON.stringify(rankings));
+  },
+
+  getRecruitingRankings: async (year, position) => {
+    const key = `rankings:${year}:${position}`;
+    const data = await redisClient.get(key);
+    return data ? JSON.parse(data) : null;
+  },
+
+  // Invalidate athlete-related caches
+  invalidateAthleteCache: async (athleteId) => {
+    const keys = await redisClient.keys(`go4it:athlete:${athleteId}*`);
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+    }
+  },
+
+  // Invalidate discovery caches
+  invalidateDiscoveryCache: async () => {
+    const keys = await redisClient.keys('go4it:discovery:*');
+    if (keys.length > 0) {
+      await redisClient.del(keys);
+    }
+  },
+
+  // Get cache statistics
+  getCacheStats: async () => {
+    const info = await redisClient.info();
+    const keys = await redisClient.keys('go4it:*');
+    return {
+      totalKeys: keys.length,
+      info: info,
+      memory: await redisClient.memory('STATS')
+    };
+  }
+};
+
 module.exports = {
   redisClient,
   cache,
   cacheMiddleware,
   clearCache,
-  checkRedisHealth
+  checkRedisHealth,
+  athleteCache
 };

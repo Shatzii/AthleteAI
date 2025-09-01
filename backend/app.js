@@ -27,8 +27,17 @@ const backendMonitor = require('./utils/monitoring');
 const { cacheMiddleware } = require('./utils/cache');
 const { logger, logRequest, checkLogHealth } = require('./utils/logger');
 const { checkSentryHealth } = require('./utils/sentry');
+
+// Initialize advanced services
+const DatabaseShardingService = require('./services/databaseSharding');
+const MessageQueueService = require('./services/messageQueue');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// Initialize services
+const dbShardingService = new DatabaseShardingService();
+const messageQueueService = new MessageQueueService();
 
 // Middleware
 app.use(securityHeaders); // Security headers first
@@ -50,10 +59,24 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
 // Database connection
-const dbURI = process.env.MONGO_URI || 'mongodb://localhost:27017/go4it';
-mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => logger.info('MongoDB connected successfully', { database: dbURI }))
-    .catch(err => logger.error('MongoDB connection error', { error: err.message, stack: err.stack }));
+const { connectDB, getDBStats } = require('./config/database');
+connectDB();
+
+// Initialize advanced services
+(async () => {
+    try {
+        // Initialize database sharding
+        await dbShardingService.initializeSharding();
+        
+        // Initialize message queue
+        await messageQueueService.initialize();
+        
+        logger.info('All advanced services initialized successfully');
+    } catch (error) {
+        logger.error('Failed to initialize advanced services:', error);
+        process.exit(1);
+    }
+})();
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -61,6 +84,10 @@ app.get('/health', async (req, res) => {
     const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
     const logHealth = checkLogHealth();
     const sentryHealth = await checkSentryHealth();
+    
+    // Check advanced services health
+    const shardingHealth = await dbShardingService.healthCheck().catch(() => ({ overall: 'error' }));
+    const queueHealth = messageQueueService.getQueueStats();
 
     res.status(200).json({
         status: 'OK',
@@ -70,10 +97,41 @@ app.get('/health', async (req, res) => {
         database: dbStatus,
         logging: logHealth,
         errorTracking: sentryHealth,
+        sharding: shardingHealth,
+        messageQueue: queueHealth,
         version: process.env.npm_package_version || '1.0.0',
         environment: process.env.NODE_ENV || 'development',
         ...healthStatus
     });
+});
+
+// Advanced services API endpoints
+app.get('/api/v1/sharding/stats', async (req, res) => {
+    try {
+        const stats = await dbShardingService.getShardStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/v1/queue/stats', (req, res) => {
+    try {
+        const stats = messageQueueService.getQueueStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/v1/queue/job', async (req, res) => {
+    try {
+        const { queueName, jobData } = req.body;
+        const jobId = await messageQueueService.addJob(queueName, jobData);
+        res.json({ jobId, status: 'queued' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 // Routes with API versioning and caching
@@ -169,7 +227,7 @@ app.use('*', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     logger.info('Server started successfully', {
         port: PORT,
         environment: process.env.NODE_ENV || 'development',
@@ -178,4 +236,52 @@ app.listen(PORT, () => {
     });
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Health check available at http://localhost:${PORT}/health`);
+});
+
+// Graceful shutdown handling
+const gracefulShutdown = async (signal) => {
+    logger.info(`Received ${signal}, initiating graceful shutdown...`);
+    
+    // Stop accepting new connections
+    server.close(async () => {
+        logger.info('HTTP server closed');
+        
+        try {
+            // Shutdown advanced services
+            await Promise.all([
+                dbShardingService.shutdown(),
+                messageQueueService.shutdown()
+            ]);
+            
+            // Close database connections
+            await mongoose.connection.close();
+            
+            logger.info('Graceful shutdown completed');
+            process.exit(0);
+        } catch (error) {
+            logger.error('Error during graceful shutdown:', error);
+            process.exit(1);
+        }
+    });
+    
+    // Force shutdown after 30 seconds
+    setTimeout(() => {
+        logger.error('Forced shutdown after timeout');
+        process.exit(1);
+    }, 30000);
+};
+
+// Handle shutdown signals
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+    logger.error('Uncaught Exception:', error);
+    gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    gracefulShutdown('unhandledRejection');
 });

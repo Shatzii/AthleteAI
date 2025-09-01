@@ -1,0 +1,220 @@
+.player-card {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  border: 1px solid var(--primary-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+.player-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 191, 255, 0.3);
+  border-color: var(--accent-color);
+}
+
+.player-card-header {
+  position: relative;
+  height: 200px;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-image-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--bg-primary);
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+}
+
+.player-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.position-badge {
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: var(--bg-primary);
+  padding: var(--spacing-xs) var(--spacing-md);
+  border-radius: var(--radius-2xl);
+  font-size: 12px;
+  font-weight: bold;
+  font-family: var(--font-family-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.player-card-body {
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+}
+
+.player-name {
+  font-family: var(--font-family-primary);
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin: 0 0 var(--spacing-sm) 0;
+  color: var(--accent-color);
+  text-align: center;
+  text-shadow: 0 0 10px rgba(13, 254, 255, 0.5);
+}
+
+.player-info {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.player-info p {
+  margin: var(--spacing-xs) 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-family: var(--font-family-secondary);
+}
+
+.player-team {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.player-school {
+  color: var(--accent-color);
+}
+
+.player-year {
+  color: var(--warning-color);
+}
+
+.player-physical {
+  color: var(--success-color);
+}
+
+.player-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: rgba(0, 191, 255, 0.1);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(0, 191, 255, 0.3);
+}
+
+.gar-score, .star-rating {
+  text-align: center;
+  flex: 1;
+}
+
+.gar-label, .star-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  font-family: var(--font-family-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.gar-value {
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: var(--font-family-primary);
+  text-shadow: 0 0 15px currentColor;
+}
+
+.stars {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-xs);
+  color: var(--warning-color);
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.star-count {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: var(--font-family-secondary);
+}
+
+.player-achievements {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid rgba(0, 191, 255, 0.3);
+}
+
+.player-achievements h4 {
+  font-family: var(--font-family-primary);
+  color: var(--accent-color);
+  font-size: 1rem;
+  margin-bottom: var(--spacing-sm);
+  text-align: center;
+}
+
+.player-achievements ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.player-achievements li {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-xs);
+  padding-left: var(--spacing-md);
+  position: relative;
+}
+
+.player-achievements li:before {
+  content: '▶';
+  color: var(--primary-color);
+  position: absolute;
+  left: 0;
+  font-size: 0.7rem;
+}
+
+.more-achievements {
+  font-size: 0.8rem;
+  color: var(--accent-color);
+  text-align: center;
+  margin-top: var(--spacing-sm);
+  font-style: italic;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .player-card {
+    margin-bottom: 20px;
+  }
+
+  .player-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .player-name {
+    font-size: 1.2rem;
+  }
+
+  .gar-value {
+    font-size: 1.8rem;
+  }
+}
+
+/* Animation for GAR score changes */
+@keyframes garPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.gar-value.updated {
+  animation: garPulse 0.5s ease-in-out;
+}

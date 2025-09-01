@@ -1,0 +1,582 @@
+.ai-football-coach {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  min-height: 100vh;
+  padding: var(--spacing-lg);
+  color: var(--text-primary);
+  font-family: var(--font-family-secondary);
+}
+
+.ai-football-coach .container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+@media (max-width: 1024px) {
+  .ai-football-coach .container {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+.ai-header {
+  text-align: center;
+  margin-bottom: var(--spacing-3xl);
+  padding: var(--spacing-3xl) var(--spacing-xl);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  color: var(--text-primary);
+  border-radius: var(--radius-2xl);
+  box-shadow: 0 0 25px rgba(0, 191, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(0, 191, 255, 0.1);
+}
+
+.ai-football-coach header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" width="25" height="25" patternUnits="userSpaceOnUse"><circle cx="12.5" cy="12.5" r="1" fill="rgba(255,255,255,0.1)"/><line x1="12.5" y1="12.5" x2="25" y2="12.5" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/><line x1="12.5" y1="12.5" x2="12.5" y2="25" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>');
+}
+
+.ai-football-coach .logo {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  position: relative;
+  z-index: 1;
+}
+
+.ai-football-coach h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 0 20px var(--secondary-color);
+  font-family: var(--font-family-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ai-football-coach h1::before {
+  content: '🤖';
+  margin-right: var(--spacing-sm);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.ai-football-coach .card {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-normal);
+}
+
+.ai-football-coach .card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.ai-football-coach .card-title {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-lg);
+  color: var(--secondary-color);
+  border-bottom: 3px solid var(--accent-color);
+  padding-bottom: var(--spacing-md);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-weight: 700;
+}
+
+.ai-football-coach .card-title::before {
+  content: '';
+  width: 6px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+  border-radius: var(--radius-sm);
+}
+
+.ai-football-coach .video-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--gray-900);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-lg);
+}
+
+.ai-football-coach .video-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: linear-gradient(135deg, var(--gray-900) 0%, var(--secondary-color) 100%);
+}
+
+.ai-football-coach .video-placeholder::before {
+  content: '🎥';
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+  opacity: 0.8;
+}
+
+.ai-football-coach .controls {
+  display: flex;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.generate-btn {
+  width: 100%;
+  padding: var(--spacing-lg);
+  background: linear-gradient(90deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+  color: var(--bg-primary);
+  border: none;
+  border-radius: var(--radius-xl);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(13, 254, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ai-football-coach button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left var(--transition-slow);
+}
+
+.ai-football-coach button:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.ai-football-coach button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary-color) 100%);
+}
+
+.ai-football-coach button:active {
+  transform: translateY(0);
+}
+
+.ai-football-coach button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-football-coach .btn-record {
+  background: linear-gradient(135deg, var(--error-color) 0%, #dc2626 100%);
+}
+
+.ai-football-coach .btn-record:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626 0%, var(--error-color) 100%);
+}
+
+.ai-football-coach .btn-stop {
+  background: linear-gradient(135deg, var(--warning-color) 0%, #d97706 100%);
+}
+
+.ai-football-coach .btn-stop:hover:not(:disabled) {
+  background: linear-gradient(135deg, #d97706 0%, var(--warning-color) 100%);
+}
+
+.ai-football-coach .btn-example {
+  background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+}
+
+.ai-football-coach .btn-example:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669 0%, var(--success-color) 100%);
+}
+
+.ai-football-coach .btn-stop.btn-record {
+  background: linear-gradient(135deg, var(--error-color) 0%, #dc2626 100%);
+}
+
+.ai-football-coach .transcript {
+  background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  height: 250px;
+  overflow-y: auto;
+  margin: var(--spacing-lg) 0;
+  font-size: 0.95rem;
+  border: 2px solid var(--gray-100);
+  line-height: 1.6;
+}
+
+.ai-football-coach .transcript::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ai-football-coach .transcript::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: var(--radius-sm);
+}
+
+.ai-football-coach .transcript::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: var(--radius-sm);
+}
+
+.ai-football-coach .user {
+  color: var(--secondary-color);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.ai-football-coach .user::before {
+  content: '👤';
+  font-size: 1.1rem;
+}
+
+.ai-football-coach .ai {
+  color: var(--accent-color);
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.ai-football-coach .ai::before {
+  content: '🤖';
+  font-size: 1.1rem;
+}
+
+.ai-football-coach .status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+  font-size: 0.95rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.ai-football-coach .status-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--warning-color);
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+.ai-football-coach .status.recording .status-indicator {
+  background: var(--error-color);
+  animation: pulse 1.5s infinite;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.ai-football-coach .examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.ai-football-coach .example-btn {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
+  color: var(--gray-900);
+  font-size: 0.9rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-lg);
+  transition: all var(--transition-normal);
+  font-weight: 500;
+}
+
+.ai-football-coach .example-btn:hover {
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--primary-color) 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+}
+
+.ai-football-coach .volume-control {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-md);
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200);
+}
+
+.ai-football-coach input[type="range"] {
+  flex: 1;
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--gray-200);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ai-football-coach input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-football-coach input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  cursor: pointer;
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.ai-football-coach .playlist {
+  margin-top: var(--spacing-lg);
+}
+
+.ai-football-coach .playlist-item {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, var(--gray-50) 0%, white 100%);
+  margin-bottom: var(--spacing-sm);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  border: 2px solid var(--gray-100);
+}
+
+.ai-football-coach .playlist-item:hover {
+  background: linear-gradient(135deg, var(--primary-light) 0%, var(--accent-color) 100%);
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+}
+
+.ai-football-coach .playlist-item i {
+  color: var(--secondary-color);
+  font-size: 1.2rem;
+}
+
+.ai-football-coach .connection-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  font-size: 0.9rem;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05));
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  color: var(--success-color);
+  font-weight: 500;
+}
+
+.ai-football-coach .connection-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--success-color);
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+.ai-football-coach .tips {
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background: linear-gradient(135deg, rgba(168, 85, 247, 0.05), rgba(139, 92, 246, 0.02));
+  border-radius: var(--radius-lg);
+  border: 2px solid rgba(168, 85, 247, 0.1);
+  font-size: 0.95rem;
+  color: var(--gray-700);
+}
+
+.ai-football-coach .tips h4 {
+  color: var(--secondary-color);
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.ai-football-coach .tips h4::before {
+  content: '💡';
+}
+
+.ai-football-coach .tips ul {
+  padding-left: var(--spacing-lg);
+  margin: var(--spacing-md) 0 0 0;
+}
+
+.ai-football-coach .tips li {
+  margin-bottom: var(--spacing-sm);
+  position: relative;
+}
+
+.ai-football-coach .tips li::marker {
+  color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+  .ai-football-coach {
+    padding: var(--spacing-md);
+  }
+
+  .ai-football-coach header {
+    padding: var(--spacing-lg);
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  .ai-football-coach h1 {
+    font-size: 2rem;
+  }
+
+  .ai-football-coach .container {
+    gap: var(--spacing-md);
+  }
+
+  .ai-football-coach .card {
+    padding: var(--spacing-lg);
+  }
+
+  .ai-football-coach .card-title {
+    font-size: 1.25rem;
+  }
+
+  .ai-football-coach .controls {
+    flex-direction: column;
+  }
+
+  .ai-football-coach .controls button {
+    width: 100%;
+  }
+
+  .ai-football-coach .examples {
+    grid-template-columns: 1fr;
+  }
+
+  .ai-football-coach .transcript {
+    height: 200px;
+    padding: var(--spacing-md);
+  }
+
+  .ai-football-coach .volume-control {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .ai-football-coach {
+    padding: var(--spacing-sm);
+  }
+
+  .ai-football-coach header {
+    padding: var(--spacing-md);
+  }
+
+  .ai-football-coach h1 {
+    font-size: 1.75rem;
+  }
+
+  .ai-football-coach .card {
+    padding: var(--spacing-md);
+  }
+
+  .ai-football-coach .card-title {
+    font-size: 1.125rem;
+  }
+
+  .ai-football-coach .video-container {
+    margin-bottom: var(--spacing-md);
+  }
+
+  .ai-football-coach .controls {
+    gap: var(--spacing-sm);
+  }
+
+  .ai-football-coach button {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: 0.9rem;
+  }
+
+  .ai-football-coach .status {
+    padding: var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .ai-football-coach .examples {
+    gap: var(--spacing-sm);
+  }
+
+  .ai-football-coach .example-btn {
+    font-size: 0.85rem;
+    padding: var(--spacing-xs) var(--spacing-sm);
+  }
+
+  .ai-football-coach .playlist-item {
+    padding: var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .ai-football-coach .tips {
+    padding: var(--spacing-md);
+    font-size: 0.9rem;
+  }
+}

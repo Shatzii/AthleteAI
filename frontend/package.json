@@ -1,0 +1,57 @@
+{
+  "name": "go4it-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for the Go4It Sports Platform",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
+    "test": "react-scripts test --watchAll=false --coverage",
+    "test:watch": "react-scripts test",
+    "test:coverage": "react-scripts test --coverage --watchAll=false",
+    "eject": "react-scripts eject",
+    "serve": "serve -s build",
+    "deploy": "npm run build && echo 'Deploy to production server'",
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "perf": "npm run build && npx serve -s build -l 3001"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chart.js": "^3.6.0",
+    "gsap": "^3.10.4",
+    "lucide-react": "^0.542.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "serve": "^13.0.2",
+    "three": "^0.128.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^12.1.5",
+    "@testing-library/user-event": "^13.5.0",
+    "webpack-bundle-analyzer": "^4.5.0"
+  },
+  "proxy": "http://localhost:5000",
+  "keywords": [
+    "sports",
+    "performance",
+    "AI",
+    "frontend"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

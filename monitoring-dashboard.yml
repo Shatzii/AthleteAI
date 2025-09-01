@@ -1,0 +1,165 @@
+# Go4It Sports Platform Monitoring Dashboard
+
+# This file contains configuration for monitoring dashboards and alerts
+# Compatible with Grafana, Prometheus, and other monitoring tools
+
+# Prometheus Configuration
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "alert_rules.yml"
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager:9093
+
+scrape_configs:
+  - job_name: 'go4it-backend'
+    static_configs:
+      - targets: ['localhost:3000']
+    metrics_path: '/metrics'
+    scrape_interval: 5s
+
+  - job_name: 'go4it-frontend'
+    static_configs:
+      - targets: ['localhost:3001']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  - job_name: 'node-exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+
+  - job_name: 'mongodb-exporter'
+    static_configs:
+      - targets: ['localhost:9216']
+    scrape_interval: 30s
+
+# Alert Rules
+groups:
+  - name: go4it_alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is {{ $value }}%"
+
+      - alert: HighMemoryUsage
+        expr: (1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is {{ $value }}%"
+
+      - alert: ApplicationDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application is down"
+          description: "Application {{ $labels.job }} is down"
+
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) * 100 > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value }}%"
+
+      - alert: SlowResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow response time detected"
+          description: "95th percentile response time is {{ $value }}s"
+
+# Grafana Dashboard Configuration
+# This would be imported into Grafana as a JSON dashboard
+
+dashboard:
+  title: "Go4It Sports Platform Overview"
+  tags: ["go4it", "sports", "platform"]
+  timezone: "UTC"
+  panels:
+    - title: "Request Rate"
+      type: "graph"
+      targets:
+        - expr: "rate(http_requests_total[5m])"
+          legendFormat: "Requests/sec"
+
+    - title: "Response Time"
+      type: "graph"
+      targets:
+        - expr: "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))"
+          legendFormat: "95th percentile"
+
+    - title: "Error Rate"
+      type: "graph"
+      targets:
+        - expr: "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m]) * 100"
+          legendFormat: "Error %"
+
+    - title: "CPU Usage"
+      type: "graph"
+      targets:
+        - expr: "100 - (avg by(instance) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
+          legendFormat: "CPU %"
+
+    - title: "Memory Usage"
+      type: "graph"
+      targets:
+        - expr: "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100"
+          legendFormat: "Memory %"
+
+    - title: "Active Users"
+      type: "graph"
+      targets:
+        - expr: "go4it_active_users"
+          legendFormat: "Active Users"
+
+# Log Aggregation Configuration (for ELK Stack)
+# Filebeat configuration for shipping logs to Elasticsearch
+
+filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/go4it/backend/*.log
+      - /var/log/go4it/frontend/*.log
+    fields:
+      service: go4it
+    fields_under_root: true
+
+  - type: docker
+    containers.ids:
+      - "*"
+    processors:
+      - add_docker_metadata:
+          host: "unix:///var/run/docker.sock"
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  index: "go4it-%{+yyyy.MM.dd}"
+
+# Kibana Index Pattern
+# go4it-*
+
+# Sample Kibana Queries for Common Issues:
+# Error logs: level:ERROR
+# Performance issues: response_time > 2000
+# Security events: event:security

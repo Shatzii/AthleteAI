@@ -1,0 +1,61 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import './Header.css';
+
+const Header = () => {
+  const { user, logout, isAuthenticated } = useAuth();
+
+  return (
+    <header className="header">
+      <div className="header-container">
+        <div className="logo">
+          <Link to="/" className="logo-link">
+            <img src="/Go4it Logo.jpeg" alt="Go4It Sports Logo" className="logo-image" />
+            <span>Go4It Sports</span>
+          </Link>
+        </div>
+
+        <nav className="nav">
+          <Link to="/" className="nav-link">Dashboard</Link>
+          <Link to="/players" className="nav-link">Players</Link>
+          <Link to="/ai-football-coach" className="nav-link">AI Coach</Link>
+          <Link to="/ncaa-tracker" className="nav-link">NCAA Tracker</Link>
+          <Link to="/international-sports" className="nav-link">International</Link>
+          <Link to="/starpath" className="nav-link starpath-link">StarPath</Link>
+          <Link to="/recruiting-hub" className="nav-link recruiting-link">Recruiting Hub</Link>
+          {isAuthenticated && user?.role === 'admin' && (
+            <Link to="/admin" className="nav-link admin-link">Admin</Link>
+          )}
+        </nav>
+
+        <div className="auth-section">
+          {isAuthenticated ? (
+            <div className="user-menu">
+              <span className="user-name">
+                Welcome, {user?.username || user?.email || 'User'}
+              </span>
+              <button onClick={logout} className="logout-btn">
+                <i className="fas fa-sign-out-alt"></i>
+                Logout
+              </button>
+            </div>
+          ) : (
+            <div className="auth-buttons">
+              <button className="login-btn">
+                <i className="fas fa-sign-in-alt"></i>
+                Login
+              </button>
+              <button className="register-btn">
+                <i className="fas fa-user-plus"></i>
+                Register
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+};
+
+export default Header;

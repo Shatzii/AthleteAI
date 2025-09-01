@@ -17,12 +17,18 @@ const Header = () => {
         </div>
 
         <nav className="nav">
-          <Link to="/" className="nav-link">Dashboard</Link>
+          <Link to="/" className="nav-link starpath-link primary-link">
+            <i className="fas fa-home"></i>
+            Home
+          </Link>
+          <Link to="/starpath" className="nav-link">
+            <i className="fas fa-star"></i>
+            StarPath
+          </Link>
           <Link to="/players" className="nav-link">Players</Link>
           <Link to="/ai-football-coach" className="nav-link">AI Coach</Link>
           <Link to="/ncaa-tracker" className="nav-link">NCAA Tracker</Link>
           <Link to="/international-sports" className="nav-link">International</Link>
-          <Link to="/starpath" className="nav-link starpath-link">StarPath</Link>
           <Link to="/recruiting-hub" className="nav-link recruiting-link">Recruiting Hub</Link>
           {isAuthenticated && user?.role === 'admin' && (
             <Link to="/admin" className="nav-link admin-link">Admin</Link>

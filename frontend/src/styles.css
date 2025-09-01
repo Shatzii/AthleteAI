@@ -1,3 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===========================================
+   FUTURISTIC ATHLETE CARD COMPONENTS
+   =========================================== */
+
+@layer components {
+  /* Card Base Styles */
+  .athlete-card {
+    @apply relative bg-dark-bg circuit-bg rounded-2xl overflow-hidden electric-border shadow-electric transform transition-transform duration-300 hover:scale-105;
+  }
+
+  .athlete-card-header {
+    @apply relative p-6 pb-4;
+  }
+
+  .athlete-card-body {
+    @apply flex flex-col items-center px-6 pb-6;
+  }
+
+  /* Avatar Styles */
+  .athlete-avatar {
+    @apply relative mb-4;
+  }
+
+  .avatar-container {
+    @apply w-32 h-32 rounded-full bg-gradient-to-r from-electric-blue to-neon-aqua p-1 shadow-aqua;
+  }
+
+  .avatar-inner {
+    @apply w-full h-full rounded-full bg-dark-bg flex items-center justify-center overflow-hidden;
+  }
+
+  /* Typography */
+  .athlete-name {
+    @apply text-2xl font-orbitron font-bold text-electric-blue text-center mb-2 tracking-wider shadow-electric;
+  }
+
+  .stat-label {
+    @apply text-sm font-rajdhani text-text-secondary;
+  }
+
+  .stat-value {
+    @apply text-sm font-orbitron text-neon-aqua shadow-aqua;
+  }
+
+  .metric-label {
+    @apply text-xs font-rajdhani text-text-secondary mb-1;
+  }
+
+  .metric-value {
+    @apply text-lg font-orbitron text-neon-aqua shadow-aqua;
+  }
+
+  /* Progress Bars */
+  .progress-track {
+    @apply bg-gradient-to-r from-electric-blue/20 to-neon-aqua/20 rounded-full;
+  }
+
+  .progress-fill {
+    @apply bg-gradient-to-r from-electric-blue to-neon-aqua rounded-full transition-all duration-300;
+  }
+
+  /* Glassmorphic Panels */
+  .glass-panel {
+    @apply bg-dark-bg/80 backdrop-blur-md border border-dark-tertiary/20 rounded-xl p-4;
+  }
+
+  /* Badge Styles */
+  .badge-electric {
+    @apply shadow-badge border border-electric-blue/50 bg-dark-tertiary text-electric-blue px-3 py-1 rounded-full text-xs font-rajdhani;
+  }
+
+  .badge-aqua {
+    @apply shadow-badge border border-neon-aqua/50 bg-dark-tertiary text-neon-aqua px-3 py-1 rounded-full text-xs font-rajdhani;
+  }
+
+  /* Stat Cards */
+  .stat-card {
+    @apply bg-dark-tertiary rounded-lg p-3 text-center hover:shadow-electric-hover transition-shadow duration-300;
+  }
+
+  /* Button Styles */
+  .btn-electric {
+    @apply bg-electric-blue hover:bg-electric-blue/80 text-white font-orbitron px-6 py-3 rounded-lg shadow-electric hover:shadow-electric-hover transition-all duration-300 transform hover:scale-105;
+  }
+
+  .btn-aqua {
+    @apply bg-neon-aqua hover:bg-neon-aqua/80 text-dark-bg font-orbitron px-6 py-3 rounded-lg shadow-aqua transition-all duration-300 transform hover:scale-105;
+  }
+
+  /* Navigation */
+  .nav-link {
+    @apply text-text-secondary hover:text-electric-blue font-rajdhani transition-colors duration-300 relative;
+  }
+
+  .nav-link::after {
+    @apply content-[''] absolute bottom-0 left-0 w-0 h-0.5 bg-electric-blue transition-all duration-300;
+  }
+
+  .nav-link:hover::after {
+    @apply w-full;
+  }
+
+  /* Form Elements */
+  .form-input {
+    @apply bg-dark-tertiary border border-electric-blue/30 rounded-lg px-4 py-3 text-text-primary placeholder-text-muted focus:border-electric-blue focus:shadow-electric focus:outline-none transition-all duration-300;
+  }
+
+  .form-label {
+    @apply text-text-secondary font-rajdhani mb-2 block;
+  }
+}
+
+/* ===========================================
+   ANIMATIONS & EFFECTS
+   =========================================== */
+
+@keyframes electric-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.3), 0 0 40px rgba(0, 191, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 191, 255, 0.6), 0 0 60px rgba(0, 191, 255, 0.3);
+  }
+}
+
+.animate-electric-pulse {
+  animation: electric-pulse 3s ease-in-out infinite;
+}
+
+/* ===========================================
+   UTILITY CLASSES
+   =========================================== */
+
+.glow-text-electric {
+  text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+}
+
+.glow-text-aqua {
+  text-shadow: 0 0 10px rgba(13, 254, 255, 0.5);
+}
+
 /* Loading Spinner */
 .loading-spinner {
   display: flex;

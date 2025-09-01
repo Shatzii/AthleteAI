@@ -1,48 +1,27 @@
 const { body, validationResult } = require('express-validator');
-const validator = require('validator');
-const xss = require('xss');
 
 // Enhanced input sanitization
 const sanitizeInput = (req, res, next) => {
-  // Sanitize query parameters
-  for (const key in req.query) {
-    if (typeof req.query[key] === 'string') {
-      req.query[key] = validator.escape(req.query[key]);
-      req.query[key] = xss(req.query[key]);
-    }
-  }
+    // Recursively sanitize object properties
+    const sanitize = (obj) => {
+        for (let key in obj) {
+            if (typeof obj[key] === 'string') {
+                // Remove potentially dangerous HTML/script content
+                obj[key] = obj[key].replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
+                obj[key] = obj[key].replace(/<[^>]*>/g, ''); // Remove HTML tags
+                obj[key] = obj[key].trim();
+            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+                sanitize(obj[key]);
+            }
+        }
+    };
 
-  // Sanitize body parameters
-  if (req.body && typeof req.body === 'object') {
-    sanitizeObject(req.body);
-  }
+    if (req.body) sanitize(req.body);
+    if (req.query) sanitize(req.query);
+    if (req.params) sanitize(req.params);
 
-  // Sanitize route parameters
-  for (const key in req.params) {
-    if (typeof req.params[key] === 'string') {
-      req.params[key] = validator.escape(req.params[key]);
-      req.params[key] = xss(req.params[key]);
-    }
-  }
-
-  next();
+    next();
 };
-
-// Recursive object sanitization
-function sanitizeObject(obj) {
-  for (const key in obj) {
-    if (typeof obj[key] === 'string') {
-      // Escape HTML entities
-      obj[key] = validator.escape(obj[key]);
-      // Remove XSS attacks
-      obj[key] = xss(obj[key]);
-      // Trim whitespace
-      obj[key] = validator.trim(obj[key]);
-    } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-      sanitizeObject(obj[key]);
-    }
-  }
-}
 const handleValidationErrors = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -163,29 +142,6 @@ const validateAICoachQuestion = [
 
     handleValidationErrors
 ];
-
-// Sanitization middleware for XSS prevention
-const sanitizeInput = (req, res, next) => {
-    // Recursively sanitize object properties
-    const sanitize = (obj) => {
-        for (let key in obj) {
-            if (typeof obj[key] === 'string') {
-                // Remove potentially dangerous HTML/script content
-                obj[key] = obj[key].replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-                obj[key] = obj[key].replace(/<[^>]*>/g, ''); // Remove HTML tags
-                obj[key] = obj[key].trim();
-            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                sanitize(obj[key]);
-            }
-        }
-    };
-
-    if (req.body) sanitize(req.body);
-    if (req.query) sanitize(req.query);
-    if (req.params) sanitize(req.params);
-
-    next();
-};
 
 module.exports = {
     validateUserRegistration,

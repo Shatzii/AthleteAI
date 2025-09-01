@@ -2,18 +2,19 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middleware/auth');
-const { validateUserRegistration, validateUserLogin, sanitizeInput } = require('../middleware/validation');
+const { sanitizeInput } = require('../middleware/validation');
 
-// Route for user registration
-router.post('/register', sanitizeInput, validateUserRegistration, userController.registerUser);
+// User management routes (non-auth)
+router.get('/', authMiddleware.verifyToken, userController.getAllUsers);
+router.get('/:id', authMiddleware.verifyToken, userController.getUserById);
+router.put('/:id', authMiddleware.verifyToken, sanitizeInput, userController.updateUser);
+router.delete('/:id', authMiddleware.verifyToken, userController.deleteUser);
 
-// Route for user login
-router.post('/login', sanitizeInput, validateUserLogin, userController.loginUser);
+// User statistics (admin only)
+router.get('/admin/stats', authMiddleware.verifyToken, userController.getUserStats);
 
-// Route for fetching user profile
-router.get('/profile', authMiddleware.verifyToken, userController.getUserProfile);
-
-// Route for user statistics (admin only)
-router.get('/stats', authMiddleware.verifyToken, userController.getUserStats);
+// User preferences
+router.get('/:id/preferences', authMiddleware.verifyToken, userController.getUserPreferences);
+router.put('/:id/preferences', authMiddleware.verifyToken, sanitizeInput, userController.updateUserPreferences);
 
 module.exports = router;

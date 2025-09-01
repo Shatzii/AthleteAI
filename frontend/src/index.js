@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
-import './styles.css';
+import './output.css';
 import performanceMonitor from './utils/performanceMonitor';
 
 // Lazy load components for better performance
-const Dashboard = lazy(() => import('./components/Dashboard'));
+const StarPath = lazy(() => import('./components/StarPath'));
 const AIFootballCoach = lazy(() => import('./components/AIFootballCoach'));
 const NCAA = lazy(() => import('./components/NCAA'));
 const Players = lazy(() => import('./components/Players'));
@@ -42,7 +42,7 @@ const App = () => {
                     <main>
                         <Suspense fallback={<LoadingSpinner />}>
                             <Switch>
-                                <Route path="/" exact component={Dashboard} />
+                                <Route path="/" exact component={StarPath} />
                                 <Route path="/ai-football-coach" component={AIFootballCoach} />
                                 <Route path="/ncaa-tracker" component={NCAA} />
                                 <Route path="/players" component={Players} />

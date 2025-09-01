@@ -131,10 +131,10 @@ describe('StarPath Component', () => {
       expect(screen.getByText('StarPath Hub')).toBeInTheDocument();
     });
 
-    const backButton = screen.getByText('← Back to Dashboard');
+    const backButton = screen.getByText('← Back to Home');
     fireEvent.click(backButton);
 
-    expect(mockHistoryPush).toHaveBeenCalledWith('/dashboard');
+    expect(mockHistoryPush).toHaveBeenCalledWith('/');
   });
 
   test('calls API functions on mount', async () => {

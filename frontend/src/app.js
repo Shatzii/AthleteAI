@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
-import Dashboard from './components/Dashboard';
+import LandingPage from './components/LandingPage';
 import AIFootballCoach from './components/AIFootballCoach';
 import NCAA from './components/NCAA';
 import Players from './components/Players';
@@ -22,7 +22,7 @@ const App = () => {
                     <Header />
                     <main>
                         <Switch>
-                            <Route path="/" exact component={Dashboard} />
+                            <Route path="/" exact component={LandingPage} />
                             <Route path="/ai-football-coach" component={AIFootballCoach} />
                             <Route path="/ncaa-tracker" component={NCAA} />
                             <Route path="/players" component={Players} />

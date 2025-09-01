@@ -63,24 +63,27 @@ class BackendMonitor {
         this.metrics.responseTimes.shift();
       }
 
-      console.log(`[${new Date().toISOString()}] Response: ${res.statusCode} - Duration: ${duration}ms`);
+      const responseLogEntry = {
+        timestamp: new Date().toISOString(),
+        method: req.method,
+        url: req.originalUrl,
+        ip: req.ip || req.connection.remoteAddress,
+        userAgent: req.get('User-Agent'),
+        userId: req.user ? req.user.id : null,
+        statusCode: res.statusCode,
+        duration
+      };
+
+      console.log(`[${responseLogEntry.timestamp}] Response: ${res.statusCode} - Duration: ${duration}ms`);
 
       // Log slow requests
       if (duration > 1000) {
-        this.logPerformance('slow_request', {
-          ...logEntry,
-          duration,
-          statusCode: res.statusCode
-        });
+        this.logPerformance('slow_request', responseLogEntry);
       }
 
       // Log errors
       if (res.statusCode >= 400) {
-        this.logError('http_error', {
-          ...logEntry,
-          statusCode: res.statusCode,
-          duration
-        });
+        this.logError('http_error', responseLogEntry);
       }
     });
 
@@ -136,6 +139,28 @@ class BackendMonitor {
 
     // Always send security events to monitoring
     this.sendToMonitoringService('security', securityLog);
+  }
+
+  // Error logging
+  logError(event, details) {
+    const errorLog = {
+      timestamp: new Date().toISOString(),
+      event,
+      ...details
+    };
+
+    console.error('[ERROR]', errorLog);
+    this.logs.errors.push(errorLog);
+
+    // Keep only last 100 errors
+    if (this.logs.errors.length > 100) {
+      this.logs.errors.shift();
+    }
+
+    // Send to monitoring service in production
+    if (process.env.NODE_ENV === 'production') {
+      this.sendToMonitoringService('error', errorLog);
+    }
   }
 
   // Performance logging

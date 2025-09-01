@@ -263,6 +263,20 @@ const StarPath = () => {
     try {
       setLoading(true);
 
+      // Only make API calls if user is authenticated
+      if (!token) {
+        // Use sample data for unauthenticated users
+        setStarPathData(SAMPLE_STARPATH_DATA);
+        setUserProgress({
+          totalXp: 1400,
+          completedNodes: 3,
+          currentTier: 2,
+          achievements: 8,
+        });
+        setLoading(false);
+        return;
+      }
+
       // Load skill nodes and progress data
       const [progressData, statsData] = await Promise.all([
         getStarPathRoute(token),
@@ -416,6 +430,21 @@ const StarPath = () => {
 
     setLoading(true);
     try {
+      // Only make API call if user is authenticated
+      if (!token) {
+        // Simulate training for unauthenticated users
+        setStarPathData((prevData) =>
+          prevData.map((node) =>
+            node.id === nodeId
+              ? { ...node, totalXp: Math.min(node.totalXp + 50, node.requiredXp) }
+              : node,
+          ),
+        );
+        setUserProgress((prev) => ({ ...prev, totalXp: prev.totalXp + 50 }));
+        setLoading(false);
+        return;
+      }
+
       // Train the skill node
       await trainStarPath(nodeId, 'practice_drill', token);
 
@@ -466,10 +495,10 @@ const StarPath = () => {
           <div className="flex justify-between items-center py-6">
             <div className="flex items-center space-x-4">
               <button
-                onClick={() => history.push('/dashboard')}
+                onClick={() => history.push('/')}
                 className="text-blue-600 hover:text-blue-600/80 transition-colors"
               >
-                ← Back to Dashboard
+                ← Back to Home
               </button>
               <h1 className="text-2xl font-bold text-white neon-text">StarPath Hub</h1>
             </div>
@@ -686,28 +715,28 @@ const StarPath = () => {
             </div>
             <div className="space-y-3">
               <button
-                onClick={() => history.push('/dashboard')}
+                onClick={() => history.push('/players')}
                 className="starpath-btn-primary"
               >
-                Student Dashboard
+                Browse Players
               </button>
               <button
-                onClick={() => history.push('/rankings')}
+                onClick={() => history.push('/players')}
                 className="starpath-btn-secondary"
               >
                 Athlete Rankings
               </button>
               <button
-                onClick={() => history.push('/verified-athletes')}
+                onClick={() => history.push('/players')}
                 className="starpath-btn-secondary"
               >
                 Verified Athletes
               </button>
               <button
-                onClick={() => history.push('/wellness-hub')}
+                onClick={() => history.push('/ai-football-coach')}
                 className="starpath-btn-secondary"
               >
-                Wellness Hub
+                Training Hub
               </button>
             </div>
           </div>

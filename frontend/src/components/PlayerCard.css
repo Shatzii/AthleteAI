@@ -1,11 +1,109 @@
-.player-card {
-  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
-  border: 1px solid var(--primary-color);
-  border-radius: var(--radius-lg);
+/* Electric Blue Glow Effects */
+.glow-electric { 
+  box-shadow: 0 0 20px rgba(0, 191, 255, 0.3), 0 0 40px rgba(0, 191, 255, 0.1); 
+}
+.glow-electric-hover:hover { 
+  box-shadow: 0 0 30px rgba(0, 191, 255, 0.5), 0 0 60px rgba(0, 191, 255, 0.2); 
+}
+
+/* Neon Aqua Glow */
+.glow-aqua { 
+  box-shadow: 0 0 15px rgba(13, 254, 255, 0.4), 0 0 30px rgba(13, 254, 255, 0.2); 
+}
+
+/* Glassmorphic Effects */
+.glassmorphic-card {
+  background: rgba(0, 20, 40, 0.8);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  border-radius: 16px;
+}
+
+/* Font Classes */
+.font-orbitron { 
+  font-family: 'Orbitron', monospace; 
+}
+.font-rajdhani { 
+  font-family: 'Rajdhani', sans-serif; 
+}
+
+/* Progress Bar Styles */
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0, 191, 255, 0.2);
+  border-radius: 9999px;
   overflow: hidden;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-lg);
-  position: relative;
+  margin-top: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #00BFFF, #0DFEFF);
+  border-radius: 9999px;
+  transition: width 0.3s ease;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  background: rgba(0, 191, 255, 0.2);
+  color: #0DFEFF;
+  border-radius: 12px;
+  font-size: 12px;
+  margin: 2px;
+  border: 1px solid rgba(13, 254, 255, 0.3);
+}
+
+.badge-glow {
+  box-shadow: 0 0 8px rgba(13, 254, 255, 0.4);
+}
+
+/* Image Glow Effect */
+.image-glow {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #00BFFF, #0DFEFF);
+  z-index: -1;
+  opacity: 0.7;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #00BFFF, #0DFEFF);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 191, 255, 0.4);
+}
+
+.btn-secondary {
+  background: rgba(0, 191, 255, 0.1);
+  color: #0DFEFF;
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 191, 255, 0.2);
+  border-color: rgba(0, 191, 255, 0.5);
 }
 
 .player-card:hover {

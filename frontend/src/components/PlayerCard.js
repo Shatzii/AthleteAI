@@ -32,7 +32,7 @@ const PlayerCard = ({ player }) => {
   };
 
   return (
-    <div className="player-card">
+    <div className="player-card glassmorphic-card glow-electric-hover">
       <div className="player-card-header">
         <div className="player-image-container">
           <img
@@ -43,64 +43,71 @@ const PlayerCard = ({ player }) => {
               e.target.src = '/default-player.png';
             }}
           />
+          <div className="image-glow"></div>
           <div
-            className="position-badge"
+            className="position-badge glow-aqua"
             style={{ backgroundColor: getPositionColor(player.position) }}
           >
             {player.position}
           </div>
         </div>
+        <div className="player-info">
+          <h3 className="player-name font-orbitron">{player.name}</h3>
+          <div className="player-school font-rajdhani">{player.school || 'High School'}</div>
+          <div className="star-rating">
+            {renderStars(player.stars || 3)}
+          </div>
+        </div>
       </div>
 
-      <div className="player-card-body">
-        <h3 className="player-name">{player.name}</h3>
-
-        <div className="player-info">
-          {player.team && <p className="player-team">{player.team}</p>}
-          {player.school && <p className="player-school">{player.school}</p>}
-          {player.year && <p className="player-year">{player.year}</p>}
-          {player.height && player.weight && (
-            <p className="player-physical">
-              {player.height} • {player.weight} lbs
-            </p>
-          )}
-        </div>
-
-        <div className="player-stats">
-          <div className="gar-score">
-            <div className="gar-label">GAR Score</div>
+      <div className="player-stats">
+        <div className="stat-item">
+          <div className="stat-label">GAR Score</div>
+          <div className="stat-value" style={{ color: getGARColor(player.garScore || 85) }}>
+            {player.garScore || 85}
+          </div>
+          <div className="progress-bar">
             <div
-              className="gar-value"
-              style={{ color: getGARColor(player.garScore) }}
-            >
-              {player.garScore}
-            </div>
-          </div>
-
-          <div className="star-rating">
-            <div className="star-label">Rating</div>
-            <div className="stars">
-              {renderStars(player.stars)}
-            </div>
-            <div className="star-count">({player.stars}/5)</div>
+              className="progress-fill"
+              style={{
+                width: `${Math.min((player.garScore || 85), 100)}%`,
+                backgroundColor: getGARColor(player.garScore || 85)
+              }}
+            ></div>
           </div>
         </div>
 
-        {player.achievements && player.achievements.length > 0 && (
-          <div className="player-achievements">
-            <h4>Achievements</h4>
-            <ul>
-              {player.achievements.slice(0, 3).map((achievement, index) => (
-                <li key={index}>{achievement}</li>
-              ))}
-            </ul>
-            {player.achievements.length > 3 && (
-              <p className="more-achievements">
-                +{player.achievements.length - 3} more
-              </p>
-            )}
-          </div>
-        )}
+        <div className="stat-item">
+          <div className="stat-label">Height</div>
+          <div className="stat-value">{player.height || "6'2\""}</div>
+        </div>
+
+        <div className="stat-item">
+          <div className="stat-label">Weight</div>
+          <div className="stat-value">{player.weight || '210 lbs'}</div>
+        </div>
+
+        <div className="stat-item">
+          <div className="stat-label">Class</div>
+          <div className="stat-value">{player.class || '2025'}</div>
+        </div>
+      </div>
+
+      <div className="player-badges">
+        {player.badges && player.badges.map((badge, index) => (
+          <span key={index} className="badge badge-glow">
+            {badge}
+          </span>
+        ))}
+      </div>
+
+      <div className="player-actions">
+        <button className="btn-primary glow-electric-hover">
+          View Profile
+        </button>
+        <button className="btn-secondary">
+          Compare
+        </button>
       </div>
     </div>
   );

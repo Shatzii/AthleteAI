@@ -46,6 +46,46 @@ const playerSchema = new mongoose.Schema({
         type: String,
         default: '/default-player.png'
     },
+    // Recruiting data from scraping
+    recruitingData: {
+        source: {
+            type: String,
+            enum: ['rivals.com', '247sports.com', 'hudl.com', 'manual']
+        },
+        sourceUrl: String,
+        rating: Number, // Original rating from source
+        location: String, // City, State
+        recruitingClass: Number, // Year of recruiting class
+        sport: {
+            type: String,
+            default: 'football'
+        },
+        scrapedAt: Date,
+        lastUpdated: Date,
+    },
+    // Video highlights
+    highlights: [{
+        title: String,
+        url: String,
+        thumbnail: String,
+        duration: String,
+        views: Number,
+        platform: {
+            type: String,
+            enum: ['hudl', 'youtube', 'twitter', 'other'],
+            default: 'hudl'
+        },
+        uploadedAt: Date,
+    }],
+    // Social media profiles
+    socialMedia: {
+        twitter: String,
+        instagram: String,
+        hudl: String,
+        rivals: String,
+        sports247: String,
+    },
+    // Performance metrics
     stats: {
         passingYards: { type: Number, default: 0 },
         rushingYards: { type: Number, default: 0 },
@@ -59,6 +99,21 @@ const playerSchema = new mongoose.Schema({
         type: String,
         trim: true
     }],
+    // Highlight flags
+    isHighlighted: {
+        type: Boolean,
+        default: false
+    },
+    highlightReason: {
+        type: String,
+        enum: ['top_rated', 'rising_star', 'high_potential', 'viral_highlight', 'scout_interest', 'manual']
+    },
+    highlightScore: {
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 100
+    },
     createdAt: {
         type: Date,
         default: Date.now
@@ -99,6 +154,36 @@ playerSchema.methods.calculateGAR = function(stats) {
 
     this.garScore = Math.min(100, Math.max(0, baseScore + performanceScore));
     return this.garScore;
+};
+
+// Method to calculate highlight score
+playerSchema.methods.calculateHighlightScore = function() {
+    let score = 0;
+
+    // Base score from recruiting rating
+    if (this.recruitingData?.rating) {
+        score += this.recruitingData.rating;
+    }
+
+    // Bonus for star ratings
+    score += this.stars * 10;
+
+    // Bonus for highlights
+    if (this.highlights && this.highlights.length > 0) {
+        score += Math.min(this.highlights.length * 5, 20); // Max 20 points for highlights
+    }
+
+    // Bonus for social media presence
+    const socialCount = Object.values(this.socialMedia || {}).filter(url => url).length;
+    score += socialCount * 2;
+
+    // Bonus for achievements
+    if (this.achievements && this.achievements.length > 0) {
+        score += Math.min(this.achievements.length * 3, 15); // Max 15 points for achievements
+    }
+
+    this.highlightScore = Math.min(100, Math.max(0, score));
+    return this.highlightScore;
 };
 
 const Player = mongoose.model('Player', playerSchema);

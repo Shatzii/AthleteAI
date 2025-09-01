@@ -145,7 +145,134 @@ exports.getUserProfile = async (req, res) => {
     }
 };
 
-// Get user statistics for admin dashboard
+// Get all users (admin only)
+exports.getAllUsers = async (req, res) => {
+    try {
+        // Check if user is admin
+        if (req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied. Admin role required.' });
+        }
+
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users', error: error.message });
+    }
+};
+
+// Get user by ID
+exports.getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if user can access this profile (own profile or admin)
+        if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user', error: error.message });
+    }
+};
+
+// Update user
+exports.updateUser = async (req, res) => {
+    try {
+        const { username, email, role } = req.body;
+
+        // Check if user can update this profile (own profile or admin)
+        if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        // Prevent non-admin users from changing role
+        if (role && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Cannot change user role' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            { username, email, role },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user', error: error.message });
+    }
+};
+
+// Delete user
+exports.deleteUser = async (req, res) => {
+    try {
+        // Check if user can delete this profile (own profile or admin)
+        if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        if (!deletedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error deleting user', error: error.message });
+    }
+};
+
+// Get user preferences
+exports.getUserPreferences = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('preferences');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Check if user can access this profile (own profile or admin)
+        if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        res.status(200).json(user.preferences || {});
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching user preferences', error: error.message });
+    }
+};
+
+// Update user preferences
+exports.updateUserPreferences = async (req, res) => {
+    try {
+        // Check if user can update this profile (own profile or admin)
+        if (req.user.id !== req.params.id && req.user.role !== 'admin') {
+            return res.status(403).json({ message: 'Access denied' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            { preferences: req.body },
+            { new: true, runValidators: true }
+        ).select('preferences');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Preferences updated successfully', preferences: updatedUser.preferences });
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating user preferences', error: error.message });
+    }
+};
+
+// Get user statistics (admin only)
 exports.getUserStats = async (req, res) => {
     try {
         // Check if user is admin
@@ -155,16 +282,19 @@ exports.getUserStats = async (req, res) => {
 
         const totalUsers = await User.countDocuments();
         const activeUsers = await User.countDocuments({ lastLogin: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } });
-        const newUsersThisMonth = await User.countDocuments({ 
-            createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } 
+        const newUsersThisMonth = await User.countDocuments({
+            createdAt: { $gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) }
         });
 
-        res.json({
+        const userStats = {
             totalUsers,
             activeUsers,
-            newUsersThisMonth
-        });
+            newUsersThisMonth,
+            inactiveUsers: totalUsers - activeUsers
+        };
+
+        res.status(200).json(userStats);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching user stats', error: error.message });
+        res.status(500).json({ message: 'Error fetching user statistics', error: error.message });
     }
 };

@@ -21,6 +21,8 @@ const campaignRoutes = require('./routes/campaignRoutes');
 const starpathRoutes = require('./routes/starpathRoutes');
 const recruitingRoutes = require('./routes/recruitingRoutes');
 const discoveryRoutes = require('./routes/discoveryRoutes');
+const eligibilityRoutes = require('./routes/eligibilityRoutes');
+const rankingRoutes = require('./routes/rankingRoutes');
 const authMiddleware = require('./middleware/auth');
 const { securityHeaders, apiLimiter, authLimiter, corsOptions } = require('./middleware/security');
 const backendMonitor = require('./utils/monitoring');
@@ -32,12 +34,27 @@ const { checkSentryHealth } = require('./utils/sentry');
 const DatabaseShardingService = require('./services/databaseSharding');
 const MessageQueueService = require('./services/messageQueue');
 
+// Import new services
+const { RealTimeService } = require('./services/realTimeService');
+const jobProcessor = require('./services/backgroundJobProcessor');
+const achievementSystem = require('./services/achievementSystem');
+const DataStorageService = require('./services/dataStorageService');
+const ScheduledDataRefreshService = require('./services/scheduledDataRefreshService');
+const DataQualityMonitoringService = require('./services/dataQualityMonitoringService');
+
+// Database connection - moved up before routes
+const { connectDB, getDBStats } = require('./config/database');
+connectDB().catch(err => console.error('Database connection failed:', err));
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Initialize services
 const dbShardingService = new DatabaseShardingService();
 const messageQueueService = new MessageQueueService();
+const dataStorageService = new DataStorageService();
+const scheduledDataRefreshService = new ScheduledDataRefreshService();
+const dataQualityMonitoringService = new DataQualityMonitoringService();
 
 // Middleware
 app.use(securityHeaders); // Security headers first
@@ -58,25 +75,34 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve static files from frontend public directory
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
-// Database connection
-const { connectDB, getDBStats } = require('./config/database');
-connectDB();
+// Database connection moved to top of file
 
-// Initialize advanced services
-(async () => {
-    try {
-        // Initialize database sharding
-        await dbShardingService.initializeSharding();
-        
-        // Initialize message queue
-        await messageQueueService.initialize();
-        
-        logger.info('All advanced services initialized successfully');
-    } catch (error) {
-        logger.error('Failed to initialize advanced services:', error);
-        process.exit(1);
-    }
-})();
+// Initialize advanced services - commented out for development
+// (async () => {
+//     try {
+//         // Initialize database sharding
+//         // await dbShardingService.initializeSharding();
+
+//         // Initialize message queue
+//         // await messageQueueService.initialize();
+
+//         // Initialize data services
+//         await dataStorageService.initialize();
+//         await scheduledDataRefreshService.initialize();
+//         await dataQualityMonitoringService.initialize();
+
+//         // Start scheduled services
+//         await scheduledDataRefreshService.start();
+//         await dataQualityMonitoringService.start();
+
+//         logger.info('Data services initialized and started');
+//         logger.info('Advanced services initialization skipped for development');
+//     } catch (error) {
+//         logger.error('Failed to initialize advanced services:', error);
+//         // Don't exit in development
+//         // process.exit(1);
+//     }
+// })();
 
 // Health check endpoint
 app.get('/health', async (req, res) => {
@@ -88,6 +114,9 @@ app.get('/health', async (req, res) => {
     // Check advanced services health
     const shardingHealth = await dbShardingService.healthCheck().catch(() => ({ overall: 'error' }));
     const queueHealth = messageQueueService.getQueueStats();
+    const dataStorageHealth = await dataStorageService.healthCheck ? await dataStorageService.healthCheck().catch(() => ({ healthy: false })) : { healthy: true };
+    const refreshHealth = await scheduledDataRefreshService.healthCheck ? await scheduledDataRefreshService.healthCheck().catch(() => ({ healthy: false })) : { healthy: true };
+    const qualityHealth = await dataQualityMonitoringService.healthCheck ? await dataQualityMonitoringService.healthCheck().catch(() => ({ healthy: false })) : { healthy: true };
 
     res.status(200).json({
         status: 'OK',
@@ -99,6 +128,9 @@ app.get('/health', async (req, res) => {
         errorTracking: sentryHealth,
         sharding: shardingHealth,
         messageQueue: queueHealth,
+        dataStorage: dataStorageHealth,
+        scheduledRefresh: refreshHealth,
+        qualityMonitoring: qualityHealth,
         version: process.env.npm_package_version || '1.0.0',
         environment: process.env.NODE_ENV || 'development',
         ...healthStatus
@@ -134,6 +166,63 @@ app.post('/api/v1/queue/job', async (req, res) => {
     }
 });
 
+// Data services API endpoints
+app.get('/api/v1/data/stats', async (req, res) => {
+    try {
+        const stats = await dataStorageService.getDataQualityStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/v1/data/refresh/stats', async (req, res) => {
+    try {
+        const stats = await scheduledDataRefreshService.getRefreshStats();
+        res.json(stats);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/v1/data/refresh/manual', async (req, res) => {
+    try {
+        const { athleteName, sport } = req.body;
+        const jobId = await scheduledDataRefreshService.refreshAthlete(athleteName, sport);
+        res.json({ jobId, status: 'scheduled' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/v1/data/quality/alerts', async (req, res) => {
+    try {
+        const alerts = dataQualityMonitoringService.getCurrentAlerts();
+        res.json({ alerts, count: alerts.length });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get('/api/v1/data/quality/metrics', async (req, res) => {
+    try {
+        const hours = parseInt(req.query.hours) || 24;
+        const metrics = await dataQualityMonitoringService.getQualityMetricsHistory(hours);
+        res.json(metrics);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/api/v1/data/quality/check', async (req, res) => {
+    try {
+        await dataQualityMonitoringService.manualQualityCheck();
+        res.json({ status: 'Quality check initiated' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Routes with API versioning and caching
 app.use('/api/v1/users', authLimiter, userRoutes); // Stricter rate limiting for auth routes
 app.use('/api/v1/auth', authLimiter, require('./routes/authRoutes')); // Authentication routes
@@ -148,6 +237,8 @@ app.use('/api/v1/campaigns', cacheMiddleware(1800), campaignRoutes); // Cache fo
 app.use('/api/v1/starpath', cacheMiddleware(900), starpathRoutes); // Cache for 15 minutes
 app.use('/api/v1/recruiting', cacheMiddleware(1800), recruitingRoutes); // Cache for 30 minutes
 app.use('/api/v1/discovery', discoveryRoutes); // Athlete discovery and scraping
+app.use('/api/v1/eligibility', eligibilityRoutes); // NCAA eligibility and AI coach
+app.use('/api/v1/rankings', cacheMiddleware(900), rankingRoutes); // Cache for 15 minutes
 
 // Legacy routes (redirect to v1)
 app.use('/api/users', (req, res) => res.redirect(301, `/api/v1${req.path}`));
@@ -162,6 +253,8 @@ app.use('/api/campaigns', (req, res) => res.redirect(301, `/api/v1${req.path}`))
 app.use('/api/starpath', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/recruiting', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/discovery', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/eligibility', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/rankings', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 
 // Monitoring middleware
 app.use(backendMonitor.requestLogger.bind(backendMonitor));
@@ -227,7 +320,9 @@ app.use('*', (req, res) => {
 });
 
 // Start server
+console.log('Starting server...');
 const server = app.listen(PORT, () => {
+    console.log('✅ Server started successfully!');
     logger.info('Server started successfully', {
         port: PORT,
         environment: process.env.NODE_ENV || 'development',
@@ -237,6 +332,12 @@ const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
     console.log(`Health check available at http://localhost:${PORT}/health`);
 });
+
+// Initialize real-time service
+const realTimeService = new RealTimeService(server);
+global.realTimeService = realTimeService;
+
+logger.info('Real-time service initialized and attached to server');
 
 // Graceful shutdown handling
 const gracefulShutdown = async (signal) => {
@@ -250,7 +351,10 @@ const gracefulShutdown = async (signal) => {
             // Shutdown advanced services
             await Promise.all([
                 dbShardingService.shutdown(),
-                messageQueueService.shutdown()
+                messageQueueService.shutdown(),
+                realTimeService ? realTimeService.shutdown() : Promise.resolve(),
+                scheduledDataRefreshService ? scheduledDataRefreshService.stop() : Promise.resolve(),
+                dataQualityMonitoringService ? dataQualityMonitoringService.stop() : Promise.resolve()
             ]);
             
             // Close database connections

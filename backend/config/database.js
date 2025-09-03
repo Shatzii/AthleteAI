@@ -1,23 +1,38 @@
 const mongoose = require('mongoose');
 
+// Mock database for development
+let mockDB = {
+    players: [],
+    isConnected: false
+};
+
 const connectDB = async () => {
     try {
-        // Enhanced connection options for production performance
+        // For development, use mock database instead of MongoDB
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('🧪 Using mock database for development');
+            mockDB.isConnected = true;
+
+            // Initialize with sample data
+            initializeMockData();
+
+            return mockDB;
+        }
+
+        // Production: Use real MongoDB
         const options = {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            maxPoolSize: 10, // Maintain up to 10 socket connections
-            serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-            socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-            bufferCommands: false, // Disable mongoose buffering
-            bufferMaxEntries: 0, // Disable mongoose buffering
-            maxIdleTimeMS: 30000, // Close connections after 30 seconds of inactivity
-            family: 4, // Use IPv4, skip trying IPv6
-            // Connection pool monitoring
-            minPoolSize: 2, // Minimum number of connections in pool
+            maxPoolSize: 10,
+            serverSelectionTimeoutMS: 5000,
+            socketTimeoutMS: 45000,
+            bufferCommands: false,
+            bufferMaxEntries: 0,
+            maxIdleTimeMS: 30000,
+            family: 4,
+            minPoolSize: 2,
         };
 
-        // Add SSL options for production
         if (process.env.NODE_ENV === 'production') {
             options.ssl = true;
             options.sslValidate = true;
@@ -25,10 +40,8 @@ const connectDB = async () => {
         }
 
         await mongoose.connect(process.env.MONGO_URI, options);
-
         console.log('✅ MongoDB connected successfully with optimized settings');
 
-        // Connection event handlers
         mongoose.connection.on('connected', () => {
             console.log('📊 Mongoose connected to MongoDB');
         });
@@ -41,7 +54,6 @@ const connectDB = async () => {
             console.log('📡 Mongoose disconnected from MongoDB');
         });
 
-        // Handle application termination
         process.on('SIGINT', async () => {
             await mongoose.connection.close();
             console.log('🔄 MongoDB connection closed through app termination');
@@ -49,29 +61,178 @@ const connectDB = async () => {
         });
 
     } catch (error) {
-        console.error('❌ MongoDB connection failed:', error.message);
-        process.exit(1);
+        console.error('❌ Database connection error:', error);
+        // For development, continue with mock data even if connection fails
+        if (process.env.NODE_ENV !== 'production') {
+            console.log('🧪 Falling back to mock database');
+            mockDB.isConnected = true;
+            initializeMockData();
+            return mockDB;
+        }
+        throw error;
     }
 };
 
-// Database performance monitoring
-const getDBStats = async () => {
-    try {
-        const stats = await mongoose.connection.db.stats();
-        return {
-            collections: stats.collections,
-            objects: stats.objects,
-            avgObjSize: stats.avgObjSize,
-            dataSize: stats.dataSize,
-            storageSize: stats.storageSize,
-            indexes: stats.indexes,
-            indexSize: stats.indexSize,
-            ok: stats.ok
-        };
-    } catch (error) {
-        console.error('Error getting database stats:', error.message);
-        return null;
-    }
-};
+function initializeMockData() {
+    mockDB.players = [
+        {
+            _id: '1',
+            name: 'John Smith',
+            position: 'QB',
+            school: 'Alabama',
+            year: 'Junior',
+            height: "6'2\"",
+            weight: 210,
+            garScore: 92,
+            stars: 5,
+            sport: 'football',
+            recruitingData: {
+                source: 'rivals.com',
+                rating: 95,
+                location: 'Texas, USA'
+            },
+            stats: {
+                passingYards: 2850,
+                rushingYards: 450,
+                touchdowns: 28,
+                tackles: 0,
+                sacks: 0,
+                interceptions: 8
+            },
+            achievements: ['State Champion', 'All-American', 'Team Captain'],
+            socialMedia: {
+                twitter: '@johnsmithqb',
+                instagram: '@johnsmithfootball'
+            },
+            highlights: [
+                { title: 'Game Winning TD', url: 'https://example.com/highlight1', views: 15000 }
+            ]
+        },
+        {
+            _id: '2',
+            name: 'Mike Johnson',
+            position: 'RB',
+            school: 'Ohio State',
+            year: 'Sophomore',
+            height: "5'11\"",
+            weight: 195,
+            garScore: 88,
+            stars: 4,
+            sport: 'football',
+            recruitingData: {
+                source: '247sports.com',
+                rating: 90,
+                location: 'Florida, USA'
+            },
+            stats: {
+                passingYards: 0,
+                rushingYards: 1250,
+                receivingYards: 350,
+                touchdowns: 15,
+                tackles: 25,
+                sacks: 0,
+                interceptions: 0
+            },
+            achievements: ['1000+ rushing yards', 'Team MVP'],
+            socialMedia: {
+                twitter: '@mikejohnsonrb',
+                instagram: '@mikejohnsonfootball'
+            }
+        },
+        {
+            _id: '3',
+            name: 'Sarah Davis',
+            position: 'WR',
+            school: 'USC',
+            year: 'Freshman',
+            height: "5'8\"",
+            weight: 165,
+            garScore: 85,
+            stars: 4,
+            sport: 'football',
+            recruitingData: {
+                source: 'rivals.com',
+                rating: 88,
+                location: 'California, USA'
+            },
+            stats: {
+                passingYards: 0,
+                rushingYards: 50,
+                receivingYards: 850,
+                touchdowns: 12,
+                tackles: 15,
+                sacks: 0,
+                interceptions: 0
+            },
+            achievements: ['All-State', 'Scholar Athlete'],
+            socialMedia: {
+                twitter: '@sarahdaviswr',
+                instagram: '@sarahdavisfootball'
+            }
+        },
+        {
+            _id: '4',
+            name: 'Tom Wilson',
+            position: 'OL',
+            school: 'Texas',
+            year: 'Senior',
+            height: "6'5\"",
+            weight: 285,
+            garScore: 78,
+            stars: 3,
+            sport: 'football',
+            recruitingData: {
+                source: '247sports.com',
+                rating: 82,
+                location: 'Texas, USA'
+            },
+            stats: {
+                passingYards: 0,
+                rushingYards: 0,
+                receivingYards: 0,
+                touchdowns: 0,
+                tackles: 45,
+                sacks: 2,
+                interceptions: 0
+            },
+            achievements: ['Academic All-Big12', 'Team Captain'],
+            socialMedia: {
+                twitter: '@tomwilsonol',
+                instagram: '@tomwilsonfootball'
+            }
+        },
+        {
+            _id: '5',
+            name: 'Chris Brown',
+            position: 'LB',
+            school: 'LSU',
+            year: 'Junior',
+            height: "6'1\"",
+            weight: 225,
+            garScore: 82,
+            stars: 4,
+            sport: 'football',
+            recruitingData: {
+                source: 'rivals.com',
+                rating: 85,
+                location: 'Louisiana, USA'
+            },
+            stats: {
+                passingYards: 0,
+                rushingYards: 0,
+                receivingYards: 0,
+                touchdowns: 2,
+                tackles: 85,
+                sacks: 8,
+                interceptions: 3
+            },
+            achievements: ['Butkus Award Watch List', 'All-SEC'],
+            socialMedia: {
+                twitter: '@chrisbrownlb',
+                instagram: '@chrisbrownfootball'
+            }
+        }
+    ];
+}
 
-module.exports = { connectDB, getDBStats };
+module.exports = { connectDB, mockDB };

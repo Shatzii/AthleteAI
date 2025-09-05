@@ -16,13 +16,28 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  // Close database connection
-  await mongoose.connection.dropDatabase();
-  await mongoose.connection.close();
+  // Close database connection with timeout
+  try {
+    if (mongoose.connection.readyState === 1) {
+      await mongoose.connection.dropDatabase();
+      await mongoose.connection.close();
+    }
+  } catch (error) {
+    console.warn('Error closing database connection:', error.message);
+  }
 
-  // Stop the in-memory MongoDB server
-  await mongoServer.stop();
-});
+  // Stop the in-memory MongoDB server with timeout
+  try {
+    if (mongoServer) {
+      await Promise.race([
+        mongoServer.stop(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('MongoDB server stop timeout')), 5000))
+      ]);
+    }
+  } catch (error) {
+    console.warn('Error stopping MongoDB server:', error.message);
+  }
+}, 10000);
 
 afterEach(async () => {
   // Clear all collections after each test

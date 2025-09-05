@@ -418,9 +418,11 @@ class AchievementSystem {
 // Singleton instance
 const achievementSystem = new AchievementSystem();
 
-// Periodic leaderboard updates
-setInterval(() => {
-    achievementSystem.updateLeaderboards();
-}, 60 * 60 * 1000); // Every hour
+// Periodic leaderboard updates - only in non-test environments
+if (process.env.NODE_ENV !== 'test') {
+    setInterval(() => {
+        achievementSystem.updateLeaderboards();
+    }, 60 * 60 * 1000); // Every hour
+}
 
 module.exports = achievementSystem;

@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LoginModal from './LoginModal';
 import './Header.css';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleLoginClick = () => {
+    setShowLoginModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowLoginModal(false);
+  };
 
   return (
     <header className="header">
@@ -26,6 +36,10 @@ const Header = () => {
             StarPath
           </Link>
           <Link to="/players" className="nav-link">Players</Link>
+          <Link to="/rankings" className="nav-link rankings-link">
+            <i className="fas fa-trophy"></i>
+            Rankings
+          </Link>
           <Link to="/ai-football-coach" className="nav-link">AI Coach</Link>
           <Link to="/ncaa-tracker" className="nav-link">NCAA Tracker</Link>
           <Link to="/international-sports" className="nav-link">International</Link>
@@ -48,11 +62,11 @@ const Header = () => {
             </div>
           ) : (
             <div className="auth-buttons">
-              <button className="login-btn">
+              <button className="login-btn" onClick={handleLoginClick}>
                 <i className="fas fa-sign-in-alt"></i>
                 Login
               </button>
-              <button className="register-btn">
+              <button className="register-btn" onClick={handleLoginClick}>
                 <i className="fas fa-user-plus"></i>
                 Register
               </button>
@@ -60,6 +74,11 @@ const Header = () => {
           )}
         </div>
       </div>
+
+      <LoginModal
+        isOpen={showLoginModal}
+        onClose={handleCloseModal}
+      />
     </header>
   );
 };

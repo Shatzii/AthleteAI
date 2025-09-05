@@ -279,9 +279,11 @@ class BackgroundJobProcessor {
 // Singleton instance
 const jobProcessor = new BackgroundJobProcessor();
 
-// Periodic cleanup
-setInterval(() => {
-    jobProcessor.cleanupOldJobs();
-}, 60 * 60 * 1000); // Every hour
+// Periodic cleanup - only in non-test environments
+if (process.env.NODE_ENV !== 'test') {
+    setInterval(() => {
+        jobProcessor.cleanupOldJobs();
+    }, 60 * 60 * 1000); // Every hour
+}
 
 module.exports = jobProcessor;

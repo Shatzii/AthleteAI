@@ -4,6 +4,9 @@ const userController = require('../controllers/userController');
 const authMiddleware = require('../middleware/auth');
 const { validateUserRegistration, validateUserLogin, sanitizeInput } = require('../middleware/validation');
 
+// Debug: Log that auth routes are being loaded
+console.log('� Loading auth routes...');
+
 // Authentication routes
 router.post('/register', sanitizeInput, validateUserRegistration, userController.registerUser);
 router.post('/login', sanitizeInput, validateUserLogin, userController.loginUser);
@@ -17,5 +20,8 @@ router.post('/change-password', authMiddleware.verifyToken, sanitizeInput, userC
 
 // Token refresh
 router.post('/refresh-token', userController.refreshToken);
+
+// Debug: Log that auth routes are loaded
+console.log('✅ Auth routes loaded successfully');
 
 module.exports = router;

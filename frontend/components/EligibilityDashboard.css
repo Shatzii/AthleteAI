@@ -1,0 +1,511 @@
+/* NCAA Eligibility Dashboard Styles */
+
+.eligibility-dashboard {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e9ecef;
+}
+
+.dashboard-header h1 {
+  color: #2c3e50;
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.dashboard-tabs {
+  display: flex;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.dashboard-tabs button {
+  background: none;
+  border: none;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  color: #6c757d;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.dashboard-tabs button:hover {
+  color: #007bff;
+}
+
+.dashboard-tabs button.active {
+  color: #007bff;
+  border-bottom-color: #007bff;
+}
+
+.alerts-section {
+  margin-bottom: 30px;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Eligibility Overview */
+.eligibility-overview {
+  display: grid;
+  gap: 30px;
+}
+
+.clock-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.clock-card h2 {
+  margin: 0 0 20px 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.clock-visual {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.clock-progress {
+  height: 20px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.clock-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.detail {
+  text-align: center;
+}
+
+.detail .label {
+  display: block;
+  font-size: 14px;
+  opacity: 0.9;
+  margin-bottom: 5px;
+}
+
+.detail .value {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.stat-card {
+  padding: 25px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.stat-card h3 {
+  margin: 0 0 15px 0;
+  color: #495057;
+  font-size: 1.2rem;
+}
+
+.score-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+}
+
+.score {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #28a745;
+}
+
+.max {
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+/* Academic Eligibility */
+.academic-card {
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.academic-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.metric {
+  text-align: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.metric label {
+  display: block;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #007bff;
+}
+
+.academic-form {
+  border-top: 1px solid #dee2e6;
+  padding-top: 30px;
+}
+
+.academic-form h3 {
+  margin: 0 0 20px 0;
+  color: #495057;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+/* Amateur Status */
+.amateur-card {
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.status-badge {
+  font-size: 1.2rem;
+  padding: 8px 16px;
+}
+
+.earnings-info {
+  text-align: right;
+  color: #6c757d;
+}
+
+.earnings-info p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.amateur-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* Recruiting Status */
+.recruiting-card {
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.recruiting-status {
+  display: grid;
+  gap: 15px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.status-item .label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.status-item .value {
+  font-weight: 600;
+  color: #007bff;
+}
+
+/* Voice Response Modal */
+.voice-response-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.voice-card {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.voice-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.voice-text {
+  color: #6c757d;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* Loading and Error States */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+  color: #6c757d;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error {
+  text-align: center;
+  padding: 40px;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.empty h2 {
+  color: #495057;
+  margin-bottom: 10px;
+}
+
+.empty p {
+  color: #6c757d;
+  margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .eligibility-dashboard {
+    padding: 15px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
+
+  .dashboard-tabs {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-tabs button {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .clock-details {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .academic-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .status-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+
+  .amateur-actions {
+    flex-direction: column;
+  }
+
+  .voice-controls {
+    flex-direction: column;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .eligibility-dashboard {
+    background: #1a1a1a;
+    color: #ffffff;
+  }
+
+  .stat-card,
+  .academic-card,
+  .amateur-card,
+  .recruiting-card,
+  .voice-card {
+    background: #2d2d2d;
+    color: #ffffff;
+  }
+
+  .metric {
+    background: #3d3d3d;
+  }
+
+  .status-item {
+    background: #3d3d3d;
+  }
+
+  .dashboard-tabs button {
+    color: #cccccc;
+  }
+
+  .dashboard-tabs button.active {
+    color: #4dabf7;
+    border-bottom-color: #4dabf7;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-tabs button,
+  .form-group input,
+  .form-group select {
+    transition: none;
+  }
+
+  .tab-content {
+    animation: none;
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .clock-card {
+    background: #000000;
+    border: 2px solid #ffffff;
+  }
+
+  .stat-card,
+  .academic-card,
+  .amateur-card,
+  .recruiting-card {
+    border: 2px solid #000000;
+  }
+
+  .metric {
+    border: 1px solid #000000;
+  }
+}

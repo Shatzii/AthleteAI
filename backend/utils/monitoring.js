@@ -23,15 +23,18 @@ class BackendMonitor {
   }
 
   init() {
-    // Monitor memory usage
-    setInterval(() => {
-      this.monitorMemoryUsage();
-    }, 30000); // Every 30 seconds
+    // Only start monitoring in non-test environments
+    if (process.env.NODE_ENV !== 'test') {
+      // Monitor memory usage
+      setInterval(() => {
+        this.monitorMemoryUsage();
+      }, 30000); // Every 30 seconds
 
-    // Clean old logs
-    setInterval(() => {
-      this.cleanOldLogs();
-    }, 24 * 60 * 60 * 1000); // Daily
+      // Clean old logs
+      setInterval(() => {
+        this.cleanOldLogs();
+      }, 24 * 60 * 60 * 1000); // Daily
+    }
   }
 
   // Request monitoring middleware

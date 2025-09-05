@@ -5,7 +5,7 @@ const API_URL = '/api'; // Use relative URL for proxy support
 // Function to register a new user
 export const registerUser = async (userData) => {
     try {
-        const response = await axios.post(`${API_URL}/users/register`, userData);
+        const response = await axios.post(`${API_URL}/v1/users/register`, userData);
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -15,7 +15,7 @@ export const registerUser = async (userData) => {
 // Function to log in a user
 export const loginUser = async (credentials) => {
     try {
-        const response = await axios.post(`${API_URL}/users/login`, credentials);
+        const response = await axios.post(`${API_URL}/v1/users/login`, credentials);
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -25,7 +25,7 @@ export const loginUser = async (credentials) => {
 // Function to fetch user profile
 export const fetchUserProfile = async (token) => {
     try {
-        const response = await axios.get(`${API_URL}/users/profile`, {
+        const response = await axios.get(`${API_URL}/v1/auth/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -33,6 +33,39 @@ export const fetchUserProfile = async (token) => {
         return response.data;
     } catch (error) {
         throw error.response.data;
+    }
+};
+
+// OAuth functions
+export const initiateGoogleLogin = () => {
+    window.location.href = `${API_URL}/v1/auth/google`;
+};
+
+export const initiateGithubLogin = () => {
+    window.location.href = `${API_URL}/v1/auth/github`;
+};
+
+export const initiateFacebookLogin = () => {
+    window.location.href = `${API_URL}/v1/auth/facebook`;
+};
+
+// Function to handle OAuth callback
+export const handleOAuthCallback = async (token, provider) => {
+    try {
+        // Store the token
+        localStorage.setItem('token', token);
+
+        // Fetch user profile
+        const userData = await fetchUserProfile(token);
+
+        return {
+            success: true,
+            token,
+            user: userData.user,
+            provider
+        };
+    } catch (error) {
+        throw error.response?.data || error;
     }
 };
 
@@ -637,6 +670,47 @@ export const getRecruitingTimeline = async (token) => {
 export const getUserStats = async (token) => {
     try {
         const response = await axios.get(`${API_URL}/users/stats`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+// Ranking API functions
+export const getGARRanks = async (params = {}) => {
+    try {
+        const response = await axios.post(`${API_URL}/rankings/gar-ranking`, params);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getPositionRanks = async (position) => {
+    try {
+        const response = await axios.get(`${API_URL}/rankings/position/${position}`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getTopAthletes = async (limit = 100) => {
+    try {
+        const response = await axios.get(`${API_URL}/rankings/top-athletes?limit=${limit}`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const updateAthleteGAR = async (id, token) => {
+    try {
+        const response = await axios.put(`${API_URL}/rankings/update-gar/${id}`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },

@@ -6,7 +6,7 @@ const RealTimeService = require('./realTimeService');
 class DataQualityMonitoringService {
     constructor() {
         this.storageService = new DataStorageService();
-        this.realTimeService = new RealTimeService();
+        this.realTimeService = null; // Will be set later when server is available
         this.monitoringInterval = null;
         this.isRunning = false;
         this.alerts = [];
@@ -24,7 +24,9 @@ class DataQualityMonitoringService {
     async initialize() {
         try {
             await this.storageService.initialize();
-            await this.realTimeService.initialize();
+            if (this.realTimeService) {
+                await this.realTimeService.initialize();
+            }
 
             logger.info('Data quality monitoring service initialized');
         } catch (error) {
@@ -421,18 +423,20 @@ class DataQualityMonitoringService {
     // Send alert notification
     async sendAlertNotification(alert) {
         try {
-            // Send via real-time service
-            await this.realTimeService.broadcastToTopic('admin_alerts', {
-                type: 'data_quality_alert',
-                alert: {
-                    id: alert.id,
-                    type: alert.type,
-                    severity: alert.severity,
-                    message: alert.message,
-                    timestamp: new Date(),
-                    occurrences: alert.occurrences
-                }
-            });
+            // Send via real-time service (if available)
+            if (this.realTimeService) {
+                await this.realTimeService.broadcastToTopic('admin_alerts', {
+                    type: 'data_quality_alert',
+                    alert: {
+                        id: alert.id,
+                        type: alert.type,
+                        severity: alert.severity,
+                        message: alert.message,
+                        timestamp: new Date(),
+                        occurrences: alert.occurrences
+                    }
+                });
+            }
 
             // Log alert
             logger.warn(`Data Quality Alert [${alert.severity.toUpperCase()}]: ${alert.message}`);

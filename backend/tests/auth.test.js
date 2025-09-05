@@ -20,7 +20,7 @@ describe('Authentication API', () => {
       };
 
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(userData)
         .expect(201);
 
@@ -42,7 +42,7 @@ describe('Authentication API', () => {
 
       // Create first user
       await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(userData)
         .expect(201);
 
@@ -58,7 +58,7 @@ describe('Authentication API', () => {
 
     it('should validate required fields', async () => {
       const response = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send({})
         .expect(400);
 
@@ -79,7 +79,7 @@ describe('Authentication API', () => {
       };
 
       await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(userData)
         .expect(201);
     });
@@ -91,7 +91,7 @@ describe('Authentication API', () => {
       };
 
       const response = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send(loginData)
         .expect(200);
 
@@ -108,7 +108,7 @@ describe('Authentication API', () => {
       };
 
       const response = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send(loginData)
         .expect(401);
 
@@ -123,7 +123,7 @@ describe('Authentication API', () => {
       };
 
       const response = await request(app)
-        .post('/api/auth/login')
+        .post('/api/v1/auth/login')
         .send(loginData)
         .expect(401);
 
@@ -146,7 +146,7 @@ describe('Authentication API', () => {
       };
 
       const registerResponse = await request(app)
-        .post('/api/auth/register')
+        .post('/api/v1/auth/register')
         .send(userData)
         .expect(201);
 
@@ -155,7 +155,7 @@ describe('Authentication API', () => {
 
     it('should return user profile with valid token', async () => {
       const response = await request(app)
-        .get('/api/auth/profile')
+        .get('/api/v1/auth/profile')
         .set('Authorization', `Bearer ${token}`)
         .expect(200);
 
@@ -167,7 +167,7 @@ describe('Authentication API', () => {
 
     it('should return error without token', async () => {
       const response = await request(app)
-        .get('/api/auth/profile')
+        .get('/api/v1/auth/profile')
         .expect(401);
 
       expect(response.body.success).toBe(false);
@@ -176,7 +176,7 @@ describe('Authentication API', () => {
 
     it('should return error with invalid token', async () => {
       const response = await request(app)
-        .get('/api/auth/profile')
+        .get('/api/v1/auth/profile')
         .set('Authorization', 'Bearer invalidtoken')
         .expect(401);
 

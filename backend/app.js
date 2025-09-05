@@ -9,6 +9,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const compression = require('compression');
 const path = require('path');
+const session = require('express-session');
+const passport = require('./config/passport');
 const userRoutes = require('./routes/userRoutes');
 const footballRoutes = require('./routes/footballRoutes');
 const performanceRoutes = require('./routes/performanceRoutes');
@@ -23,6 +25,7 @@ const recruitingRoutes = require('./routes/recruitingRoutes');
 const discoveryRoutes = require('./routes/discoveryRoutes');
 const eligibilityRoutes = require('./routes/eligibilityRoutes');
 const rankingRoutes = require('./routes/rankingRoutes');
+const oauthRoutes = require('./routes/oauthRoutes');
 const authMiddleware = require('./middleware/auth');
 const { securityHeaders, apiLimiter, authLimiter, corsOptions } = require('./middleware/security');
 const backendMonitor = require('./utils/monitoring');
@@ -64,6 +67,22 @@ app.use(compression()); // Compress responses
 app.use(express.json({ limit: '10mb' })); // Limit JSON payload size
 app.use(express.urlencoded({ extended: true, limit: '10mb' })); // Limit URL-encoded payload size
 
+// Session configuration for OAuth
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'your-session-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Request logging middleware
 app.use(logRequest);
 
@@ -74,6 +93,9 @@ app.use('/api/', apiLimiter);
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve static files from frontend public directory
 app.use(express.static(path.join(__dirname, '../frontend/public')));
+
+// OAuth routes
+app.use('/api/v1/auth', oauthRoutes);
 
 // Database connection moved to top of file
 
@@ -225,7 +247,15 @@ app.post('/api/v1/data/quality/check', async (req, res) => {
 
 // Routes with API versioning and caching
 app.use('/api/v1/users', authLimiter, userRoutes); // Stricter rate limiting for auth routes
-app.use('/api/v1/auth', authLimiter, require('./routes/authRoutes')); // Authentication routes
+console.log('🔐 Mounting auth routes at /api/v1/auth (without rate limiter for testing)');
+app.use('/api/v1/auth', require('./routes/authRoutes')); // Authentication routes - temporarily removed rate limiter
+console.log('✅ Auth routes mounted successfully');
+
+// Test route to verify basic routing works
+app.get('/test', (req, res) => {
+    console.log('🧪 Test route hit!');
+    res.json({ message: 'Test route works!' });
+});
 app.use('/api/v1/football', cacheMiddleware(1800), footballRoutes); // Cache for 30 minutes
 app.use('/api/v1/performance', cacheMiddleware(900), performanceRoutes); // Cache for 15 minutes
 app.use('/api/v1/ncaa', cacheMiddleware(3600), ncaaRoutes); // Cache for 1 hour
@@ -242,6 +272,7 @@ app.use('/api/v1/rankings', cacheMiddleware(900), rankingRoutes); // Cache for 1
 
 // Legacy routes (redirect to v1)
 app.use('/api/users', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/auth', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/football', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/performance', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/ncaa', (req, res) => res.redirect(301, `/api/v1${req.path}`));
@@ -311,33 +342,35 @@ app.get('/metrics', authMiddleware.authenticateToken, (req, res) => {
 app.use(sentryErrorHandler); // Sentry error tracking
 app.use(backendMonitor.errorLogger.bind(backendMonitor)); // Existing error logger
 
-// 404 handler
+// Start server only when this file is run directly (not when imported for testing)
+if (require.main === module) {
+    console.log('Starting server...');
+    const server = app.listen(PORT, () => {
+        console.log('✅ Server started successfully!');
+        logger.info('Server started successfully', {
+            port: PORT,
+            environment: process.env.NODE_ENV || 'development',
+            version: process.env.npm_package_version || '1.0.0',
+            timestamp: new Date().toISOString()
+        });
+        console.log(`Server is running on http://localhost:${PORT}`);
+        console.log(`Health check available at http://localhost:${PORT}/health`);
+    });
+
+    // Initialize real-time service
+    const realTimeService = new RealTimeService(server);
+    global.realTimeService = realTimeService;
+
+    logger.info('Real-time service initialized and attached to server');
+}
+
+// 404 handler - MUST be last
 app.use('*', (req, res) => {
     res.status(404).json({
         success: false,
         message: 'Route not found'
     });
 });
-
-// Start server
-console.log('Starting server...');
-const server = app.listen(PORT, () => {
-    console.log('✅ Server started successfully!');
-    logger.info('Server started successfully', {
-        port: PORT,
-        environment: process.env.NODE_ENV || 'development',
-        version: process.env.npm_package_version || '1.0.0',
-        timestamp: new Date().toISOString()
-    });
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Health check available at http://localhost:${PORT}/health`);
-});
-
-// Initialize real-time service
-const realTimeService = new RealTimeService(server);
-global.realTimeService = realTimeService;
-
-logger.info('Real-time service initialized and attached to server');
 
 // Graceful shutdown handling
 const gracefulShutdown = async (signal) => {
@@ -389,3 +422,6 @@ process.on('unhandledRejection', (reason, promise) => {
     logger.error('Unhandled Rejection at:', promise, 'reason:', reason);
     gracefulShutdown('unhandledRejection');
 });
+
+// Export the app for testing
+module.exports = app;

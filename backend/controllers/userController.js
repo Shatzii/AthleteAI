@@ -298,3 +298,184 @@ exports.getUserStats = async (req, res) => {
         res.status(500).json({ message: 'Error fetching user statistics', error: error.message });
     }
 };
+
+// Logout user
+exports.logoutUser = async (req, res) => {
+    try {
+        // For stateless JWT, we just return success
+        // The client should remove the token from storage
+        res.status(200).json({
+            success: true,
+            message: 'User logged out successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error during logout',
+            error: error.message
+        });
+    }
+};
+
+// Forgot password
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        // Find user by email
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found with this email'
+            });
+        }
+
+        // Generate reset token (simplified - in production use crypto.randomBytes)
+        const resetToken = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        // In production, send email with reset link
+        // For now, just return success
+        res.status(200).json({
+            success: true,
+            message: 'Password reset email sent',
+            resetToken: resetToken // Remove in production
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error processing forgot password request',
+            error: error.message
+        });
+    }
+};
+
+// Reset password
+exports.resetPassword = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+
+        // Verify token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        // Find user
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+        // Update password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password reset successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error resetting password',
+            error: error.message
+        });
+    }
+};
+
+// Change password
+exports.changePassword = async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        const userId = req.user.id;
+
+        // Find user
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Verify current password
+        const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+        if (!isValidPassword) {
+            return res.status(400).json({
+                success: false,
+                message: 'Current password is incorrect'
+            });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 12);
+
+        // Update password
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'Password changed successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error changing password',
+            error: error.message
+        });
+    }
+};
+
+// Refresh token
+exports.refreshToken = async (req, res) => {
+    try {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+            return res.status(400).json({
+                success: false,
+                message: 'Refresh token is required'
+            });
+        }
+
+        // Verify refresh token
+        const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+        // Find user
+        const user = await User.findById(decoded.id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        // Generate new access token
+        const newToken = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: 'Token refreshed successfully',
+            token: newToken
+        });
+    } catch (error) {
+        res.status(401).json({
+            success: false,
+            message: 'Invalid refresh token',
+            error: error.message
+        });
+    }
+};

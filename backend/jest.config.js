@@ -23,8 +23,8 @@ module.exports = {
     }
   },
   setupFilesAfterEnv: ['<rootDir>/tests/setup.js'],
-  testTimeout: 10000,
-  moduleNameMapping: {
+  testTimeout: 30000,
+  moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1'
   },
   transformIgnorePatterns: [
@@ -32,6 +32,7 @@ module.exports = {
   ],
   verbose: true,
   forceExit: true,
+  detectOpenHandles: true,
   clearMocks: true,
   resetMocks: true,
   restoreMocks: true

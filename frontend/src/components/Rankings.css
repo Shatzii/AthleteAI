@@ -1,0 +1,369 @@
+/* Rankings Component Styles */
+.rankings-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Orbitron', 'Rajdhani', sans-serif;
+}
+
+.rankings-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.rankings-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #00BFFF;
+  text-shadow: 0 0 20px rgba(0, 191, 255, 0.5);
+  margin-bottom: 10px;
+}
+
+.rankings-subtitle {
+  font-size: 1.1rem;
+  color: #0DFEFF;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 400;
+}
+
+.rankings-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.category-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-selector label {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.category-select {
+  background: rgba(0, 191, 255, 0.1);
+  border: 2px solid #00BFFF;
+  border-radius: 8px;
+  color: #0DFEFF;
+  padding: 10px 15px;
+  font-size: 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  min-width: 250px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.category-select:focus {
+  outline: none;
+  border-color: #0DFEFF;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.3);
+}
+
+.category-select option {
+  background: #1a1a2e;
+  color: #0DFEFF;
+}
+
+.rankings-stats {
+  display: flex;
+  gap: 30px;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #FFA500;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+}
+
+/* Rankings Table */
+.rankings-table-container {
+  background: rgba(0, 191, 255, 0.05);
+  border-radius: 15px;
+  border: 1px solid rgba(0, 191, 255, 0.2);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 191, 255, 0.1);
+}
+
+.rankings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.rankings-table thead {
+  background: linear-gradient(135deg, #00BFFF, #0DFEFF);
+}
+
+.rankings-table th {
+  padding: 15px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #1a1a2e;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.rankings-table tbody tr {
+  border-bottom: 1px solid rgba(0, 191, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.rankings-table tbody tr:hover {
+  background: rgba(0, 191, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 191, 255, 0.2);
+}
+
+.rankings-table td {
+  padding: 15px 10px;
+  vertical-align: middle;
+}
+
+/* Rank Cell */
+.rank-cell {
+  width: 80px;
+  text-align: center;
+}
+
+.rank-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+/* Athlete Cell */
+.athlete-cell {
+  min-width: 200px;
+}
+
+.athlete-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.athlete-name {
+  font-weight: 600;
+  color: #0DFEFF;
+  font-size: 1rem;
+}
+
+.athlete-country {
+  font-size: 0.8rem;
+  color: #FFA500;
+  opacity: 0.8;
+}
+
+/* Position Cell */
+.position-cell {
+  width: 80px;
+  text-align: center;
+}
+
+.position-badge {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* School Cell */
+.school-cell {
+  min-width: 150px;
+  color: #FFD700;
+  font-weight: 500;
+}
+
+/* GAR Cell */
+.gar-cell {
+  width: 120px;
+  text-align: center;
+}
+
+.gar-score {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+
+.gar-bar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.gar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Breakdown Cell */
+.breakdown-cell {
+  min-width: 180px;
+}
+
+.gar-breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.breakdown-item {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+}
+
+.breakdown-label {
+  color: #FFA500;
+  font-weight: 600;
+}
+
+.breakdown-value {
+  color: #0DFEFF;
+  font-weight: 700;
+}
+
+/* Stars Cell */
+.stars-cell {
+  width: 100px;
+  text-align: center;
+}
+
+.star-rating {
+  font-size: 1.1rem;
+  color: #FFD700;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+}
+
+/* Loading and Error States */
+.loading, .error {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(0, 191, 255, 0.1);
+  border-left: 4px solid #00BFFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.error h2 {
+  color: #FF6B6B;
+  margin-bottom: 10px;
+}
+
+.error p {
+  color: #FFA500;
+  margin-bottom: 20px;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #00BFFF, #0DFEFF);
+  border: none;
+  color: #1a1a2e;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 191, 255, 0.3);
+}
+
+/* No Rankings State */
+.no-rankings {
+  text-align: center;
+  padding: 60px 20px;
+  color: #FFA500;
+}
+
+.no-rankings h3 {
+  margin-bottom: 10px;
+  color: #FFD700;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .rankings-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rankings-stats {
+    justify-content: center;
+  }
+
+  .rankings-table-container {
+    overflow-x: auto;
+  }
+
+  .rankings-table {
+    min-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rankings-container {
+    padding: 15px;
+  }
+
+  .rankings-title {
+    font-size: 2rem;
+  }
+
+  .rankings-table th,
+  .rankings-table td {
+    padding: 10px 5px;
+  }
+
+  .gar-breakdown {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .breakdown-item {
+    font-size: 0.7rem;
+  }
+}

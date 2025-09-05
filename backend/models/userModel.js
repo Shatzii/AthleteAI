@@ -21,9 +21,41 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: [true, 'Password is required'],
+        required: function() {
+            // Password is required only if no OAuth provider is set
+            return !this.googleId && !this.githubId && !this.facebookId;
+        },
         minlength: [8, 'Password must be at least 8 characters'],
         select: false // Don't include password in queries by default
+    },
+    // OAuth provider fields
+    googleId: {
+        type: String,
+        sparse: true
+    },
+    githubId: {
+        type: String,
+        sparse: true
+    },
+    facebookId: {
+        type: String,
+        sparse: true
+    },
+    oauthProvider: {
+        type: String,
+        enum: ['local', 'google', 'github', 'facebook'],
+        default: 'local'
+    },
+    profilePicture: {
+        type: String
+    },
+    firstName: {
+        type: String,
+        trim: true
+    },
+    lastName: {
+        type: String,
+        trim: true
     },
     role: {
         type: String,
@@ -68,8 +100,8 @@ userSchema.virtual('isLocked').get(function() {
 
 // Pre-save middleware to hash password
 userSchema.pre('save', async function(next) {
-    // Only hash the password if it has been modified (or is new)
-    if (!this.isModified('password')) return next();
+    // Only hash the password if it has been modified (or is new) and it's a local user
+    if (!this.isModified('password') || this.oauthProvider !== 'local') return next();
 
     try {
         // Hash password with cost of 12
@@ -126,6 +158,88 @@ userSchema.methods.resetLoginAttempts = function() {
 // Static method to find user for authentication
 userSchema.statics.findForAuth = function(email) {
     return this.findOne({ email, isActive: true }).select('+password');
+};
+
+// Static method to find or create OAuth user
+userSchema.statics.findOrCreateOAuthUser = async function(provider, profile) {
+    const providerId = profile.id;
+    const email = profile.emails?.[0]?.value;
+    const displayName = profile.displayName;
+    const firstName = profile.name?.givenName;
+    const lastName = profile.name?.familyName;
+    const profilePicture = profile.photos?.[0]?.value;
+
+    if (!email) {
+        throw new Error('Email is required for OAuth registration');
+    }
+
+    // Try to find existing user by provider ID
+    let user = await this.findOne({ [`${provider}Id`]: providerId });
+
+    if (user) {
+        // Update last login
+        user.lastLogin = new Date();
+        await user.save();
+        return user;
+    }
+
+    // Try to find existing user by email
+    user = await this.findOne({ email });
+
+    if (user) {
+        // Link OAuth provider to existing user
+        user[`${provider}Id`] = providerId;
+        user.oauthProvider = provider;
+        if (profilePicture && !user.profilePicture) {
+            user.profilePicture = profilePicture;
+        }
+        if (firstName && !user.firstName) {
+            user.firstName = firstName;
+        }
+        if (lastName && !user.lastName) {
+            user.lastName = lastName;
+        }
+        user.lastLogin = new Date();
+        await user.save();
+        return user;
+    }
+
+    // Create new OAuth user
+    const username = await this.generateUniqueUsername(displayName || email.split('@')[0]);
+
+    user = new this({
+        username,
+        email,
+        [`${provider}Id`]: providerId,
+        oauthProvider: provider,
+        profilePicture,
+        firstName,
+        lastName,
+        lastLogin: new Date()
+    });
+
+    await user.save();
+    return user;
+};
+
+// Static method to generate unique username
+userSchema.statics.generateUniqueUsername = async function(baseUsername) {
+    let username = baseUsername.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase();
+    if (username.length < 3) username = username + 'user';
+    if (username.length > 30) username = username.substring(0, 30);
+
+    let counter = 0;
+    let uniqueUsername = username;
+
+    while (await this.findOne({ username: uniqueUsername })) {
+        counter++;
+        uniqueUsername = username + counter;
+        if (uniqueUsername.length > 30) {
+            uniqueUsername = username.substring(0, 27) + counter;
+        }
+    }
+
+    return uniqueUsername;
 };
 
 const User = mongoose.model('User', userSchema);

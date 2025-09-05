@@ -11,6 +11,10 @@ const StarPath = lazy(() => import('./components/StarPath'));
 const AIFootballCoach = lazy(() => import('./components/AIFootballCoach'));
 const NCAA = lazy(() => import('./components/NCAA'));
 const Players = lazy(() => import('./components/Players'));
+const Rankings = lazy(() => import('./components/Rankings'));
+const InternationalSports = lazy(() => import('./components/InternationalSports'));
+const RecruitingHub = lazy(() => import('./components/RecruitingHub'));
+const Admin = lazy(() => import('./components/Admin'));
 
 // Loading component
 const LoadingSpinner = () => (
@@ -43,9 +47,14 @@ const App = () => {
                         <Suspense fallback={<LoadingSpinner />}>
                             <Switch>
                                 <Route path="/" exact component={StarPath} />
+                                <Route path="/starpath" component={StarPath} />
                                 <Route path="/ai-football-coach" component={AIFootballCoach} />
                                 <Route path="/ncaa-tracker" component={NCAA} />
                                 <Route path="/players" component={Players} />
+                                <Route path="/rankings" component={Rankings} />
+                                <Route path="/international-sports" component={InternationalSports} />
+                                <Route path="/recruiting-hub" component={RecruitingHub} />
+                                <Route path="/admin" component={Admin} />
                                 {/* Add more routes as needed */}
                             </Switch>
                         </Suspense>

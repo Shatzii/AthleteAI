@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { loginUser, registerUser, fetchUserProfile } from '../utils/api';
+import { loginUser, registerUser, fetchUserProfile, handleOAuthCallback } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -74,6 +74,20 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const handleOAuthLogin = async (token, provider) => {
+    try {
+      const result = await handleOAuthCallback(token, provider);
+      if (result.success) {
+        setUser(result.user);
+        setToken(result.token);
+        return { success: true };
+      }
+      return { success: false, message: 'OAuth login failed' };
+    } catch (error) {
+      return { success: false, message: error.message || 'OAuth login failed' };
+    }
+  };
+
   const value = {
     user,
     token,
@@ -81,6 +95,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    handleOAuthLogin,
     isAuthenticated: !!user
   };
 

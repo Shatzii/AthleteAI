@@ -160,14 +160,17 @@ const checkSentryHealth = async () => {
 
 // Middleware for automatic error tracking
 const sentryErrorHandler = (err, req, res, next) => {
-  Sentry.withScope((scope) => {
-    if (req.user) {
-      setUserContext(req.user);
-    }
-    setRequestContext(req);
-    scope.setTag('handler', 'error');
-    Sentry.captureException(err);
-  });
+  // Only capture errors if Sentry is properly initialized
+  if (process.env.SENTRY_DSN && process.env.SENTRY_DSN !== 'https://your-sentry-dsn@sentry.io/project-id') {
+    Sentry.withScope((scope) => {
+      if (req.user) {
+        setUserContext(req.user);
+      }
+      setRequestContext(req);
+      scope.setTag('handler', 'error');
+      Sentry.captureException(err);
+    });
+  }
 
   // Continue to next error handler
   next(err);
@@ -175,17 +178,20 @@ const sentryErrorHandler = (err, req, res, next) => {
 
 // Performance monitoring middleware
 const sentryTracingHandler = (req, res, next) => {
-  const transaction = Sentry.startTransaction({
-    name: `${req.method} ${req.originalUrl}`,
-    op: 'http.server',
-  });
+  // Only create transactions if Sentry is properly initialized
+  if (process.env.SENTRY_DSN && process.env.SENTRY_DSN !== 'https://your-sentry-dsn@sentry.io/project-id') {
+    const transaction = Sentry.startTransaction({
+      name: `${req.method} ${req.originalUrl}`,
+      op: 'http.server',
+    });
 
-  Sentry.getCurrentScope().setSpan(transaction);
+    Sentry.getCurrentScope().setSpan(transaction);
 
-  res.on('finish', () => {
-    transaction.setHttpStatus(res.statusCode);
-    transaction.finish();
-  });
+    res.on('finish', () => {
+      transaction.setHttpStatus(res.statusCode);
+      transaction.finish();
+    });
+  }
 
   next();
 };

@@ -1,4 +1,4 @@
-const aiCoachVoice = require('../../ai-coach-voice');
+const aiCoachVoice = require('./ai-coach-voice');
 const eligibilityService = require('./eligibilityService');
 
 class NCAAEligibilityCoach {

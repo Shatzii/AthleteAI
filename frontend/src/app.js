@@ -16,6 +16,9 @@ import RecruitingHub from './components/RecruitingHub';
 import Rankings from './components/Rankings';
 import OAuthCallback from './components/OAuthCallback';
 import AIDashboard from './components/AIDashboard';
+import RealTimeAnalytics from './components/RealTimeAnalytics';
+import TeamPlatform from './components/TeamPlatform';
+import TrainingPrograms from './components/TrainingPrograms';
 import './styles.css';
 
 const App = () => {
@@ -39,6 +42,10 @@ const App = () => {
                             <Route path="/starpath" component={StarPath} />
                             <Route path="/recruiting-hub" component={RecruitingHub} />
                             <Route path="/rankings" component={Rankings} />
+                            {/* Phase 2 High-Impact Features */}
+                            <Route path="/analytics" component={RealTimeAnalytics} />
+                            <Route path="/team-platform" component={TeamPlatform} />
+                            <Route path="/training-programs" component={TrainingPrograms} />
                             {/* Add more routes as needed */}
                         </Switch>
                     </main>

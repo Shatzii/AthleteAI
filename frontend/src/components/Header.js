@@ -48,6 +48,19 @@ const Header = () => {
           <Link to="/ncaa-tracker" className="nav-link">NCAA Tracker</Link>
           <Link to="/international-sports" className="nav-link">International</Link>
           <Link to="/recruiting-hub" className="nav-link recruiting-link">Recruiting Hub</Link>
+          {/* Phase 2 High-Impact Features */}
+          <Link to="/analytics" className="nav-link analytics-link">
+            <i className="fas fa-chart-line"></i>
+            Analytics
+          </Link>
+          <Link to="/team-platform" className="nav-link team-link">
+            <i className="fas fa-users"></i>
+            Team Platform
+          </Link>
+          <Link to="/training-programs" className="nav-link training-link">
+            <i className="fas fa-dumbbell"></i>
+            Training Programs
+          </Link>
           {isAuthenticated && user?.role === 'admin' && (
             <Link to="/admin" className="nav-link admin-link">Admin</Link>
           )}

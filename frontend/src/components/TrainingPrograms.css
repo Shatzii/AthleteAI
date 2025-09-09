@@ -1,0 +1,734 @@
+.training-programs {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.platform-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.platform-header h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+.create-program-btn {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-program-btn:hover {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.platform-content {
+    display: flex;
+    gap: 20px;
+}
+
+.main-content {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.program-tabs {
+    display: flex;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.program-tabs button {
+    padding: 15px 25px;
+    border: none;
+    background: #f8f9fa;
+    color: #6c757d;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.program-tabs button:hover {
+    background: #e9ecef;
+}
+
+.program-tabs button.active {
+    background: white;
+    color: #e74c3c;
+    border-bottom-color: #e74c3c;
+}
+
+.tab-content {
+    padding: 20px;
+}
+
+.programs-list,
+.templates-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.program-card,
+.template-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.program-card:hover,
+.template-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: #e74c3c;
+}
+
+.program-header,
+.template-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.program-header h4,
+.template-header h4 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.program-status {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.program-status.active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.program-status.completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.program-status.paused {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.program-description,
+.template-description {
+    color: #6c757d;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.program-meta,
+.template-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.program-sport,
+.template-sport,
+.program-level,
+.template-level,
+.program-duration,
+.template-duration {
+    font-size: 14px;
+    color: #495057;
+    background: #f8f9fa;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.program-progress {
+    margin-top: 15px;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.progress-text {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.use-template-btn {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.use-template-btn:hover {
+    background: linear-gradient(135deg, #2980b9, #21618c);
+    transform: translateY(-1px);
+}
+
+/* Program Details */
+.program-details {
+    max-width: 100%;
+}
+
+.program-details .program-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.program-details .program-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.back-btn {
+    padding: 8px 16px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+.program-overview {
+    margin-bottom: 30px;
+}
+
+.overview-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    border: 1px solid #dee2e6;
+}
+
+.stat-card h4 {
+    margin: 0 0 10px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.progress-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: conic-gradient(#e74c3c 0% 75%, #e9ecef 75% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    position: relative;
+}
+
+.progress-circle::before {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    background: white;
+    border-radius: 50%;
+}
+
+.progress-circle span {
+    position: relative;
+    z-index: 1;
+    font-size: 18px;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #e74c3c;
+}
+
+.program-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.section h4 {
+    margin: 0 0 20px 0;
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.goals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.goal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.goal-info h5 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.goal-info p {
+    margin: 5px 0;
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.goal-progress {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.goal-progress .progress-bar {
+    width: 100px;
+    height: 6px;
+}
+
+.goal-progress span {
+    font-size: 12px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.add-goal-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.add-goal-form h5 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+    align-items: end;
+}
+
+.form-row input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.form-row input:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.add-goal-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-goal-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #229954, #27ae60);
+    transform: translateY(-1px);
+}
+
+.add-goal-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.schedule-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.week-card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+.week-card h5 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.week-workouts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.workout-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.workout-day {
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 80px;
+}
+
+.workout-name {
+    flex: 1;
+    color: #495057;
+}
+
+.workout-duration {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #f8f9fa;
+    color: #2c3e50;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #2c3e50;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.cancel-btn {
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #5a6268;
+}
+
+.create-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.create-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c0392b, #a93226);
+    transform: translateY(-1px);
+}
+
+.create-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Loading and Error States */
+.loading,
+.error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    font-size: 18px;
+    color: #6c757d;
+}
+
+.error {
+    color: #e74c3c;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .training-programs {
+        padding: 15px;
+    }
+
+    .platform-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .platform-header h2 {
+        font-size: 24px;
+    }
+
+    .programs-list,
+    .templates-list {
+        grid-template-columns: 1fr;
+    }
+
+    .program-card,
+    .template-card {
+        padding: 15px;
+    }
+
+    .program-meta,
+    .template-meta {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .overview-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row input {
+        margin-bottom: 10px;
+    }
+
+    .schedule-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .workout-item {
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+    }
+
+    .modal {
+        width: 95%;
+        margin: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .overview-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .program-details .program-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .goal-item {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .goal-progress {
+        align-self: stretch;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

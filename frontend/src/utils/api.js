@@ -720,3 +720,140 @@ export const updateAthleteGAR = async (id, token) => {
         throw error.response.data;
     }
 };
+
+// Injury Risk Assessment API functions
+export const getInjuryRisk = async (athleteId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/injury-risk/${athleteId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getInjuryRiskTrends = async (athleteId, token, months = 6) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/injury-risk/${athleteId}/trends?months=${months}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getInjuryPreventionRecommendations = async (athleteId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/injury-risk/${athleteId}/recommendations`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+// Performance Prediction API functions
+export const getPerformancePrediction = async (athleteId, token, days = 30) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/performance-prediction/${athleteId}?days=${days}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getPerformanceAnalysis = async (athleteId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/performance-prediction/${athleteId}/analysis`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getTrainingOptimization = async (athleteId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/performance-prediction/${athleteId}/optimization`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+// Enhanced NLP Coach API functions
+export const askEnhancedCoach = async (question, athleteId = null, token) => {
+    try {
+        const response = await axios.post(`${API_URL}/v1/enhanced-coach/ask`, {
+            question,
+            athleteId,
+            context: {}
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getCoachSuggestions = async (athleteId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/enhanced-coach/suggestions/${athleteId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getCoachTopics = async (token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/enhanced-coach/topics`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getCoachStats = async (token) => {
+    try {
+        const response = await axios.get(`${API_URL}/v1/enhanced-coach/stats`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};

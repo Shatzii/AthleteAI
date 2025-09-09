@@ -26,6 +26,11 @@ const discoveryRoutes = require('./routes/discoveryRoutes');
 const eligibilityRoutes = require('./routes/eligibilityRoutes');
 const rankingRoutes = require('./routes/rankingRoutes');
 const oauthRoutes = require('./routes/oauthRoutes');
+
+// New AI/ML routes
+const injuryRiskRoutes = require('./routes/injuryRiskRoutes');
+const performancePredictionRoutes = require('./routes/performancePredictionRoutes');
+const enhancedCoachRoutes = require('./routes/enhancedCoachRoutes');
 const authMiddleware = require('./middleware/auth');
 const { securityHeaders, apiLimiter, authLimiter, corsOptions } = require('./middleware/security');
 const backendMonitor = require('./utils/monitoring');
@@ -270,6 +275,11 @@ app.use('/api/v1/discovery', discoveryRoutes); // Athlete discovery and scraping
 app.use('/api/v1/eligibility', eligibilityRoutes); // NCAA eligibility and AI coach
 app.use('/api/v1/rankings', cacheMiddleware(900), rankingRoutes); // Cache for 15 minutes
 
+// New AI/ML routes
+app.use('/api/v1/injury-risk', injuryRiskRoutes); // Injury risk assessment
+app.use('/api/v1/performance-prediction', performancePredictionRoutes); // Performance prediction
+app.use('/api/v1/enhanced-coach', enhancedCoachRoutes); // Enhanced NLP coach
+
 // Legacy routes (redirect to v1)
 app.use('/api/users', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/auth', (req, res) => res.redirect(301, `/api/v1${req.path}`));
@@ -286,6 +296,11 @@ app.use('/api/recruiting', (req, res) => res.redirect(301, `/api/v1${req.path}`)
 app.use('/api/discovery', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/eligibility', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/rankings', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+
+// Legacy redirects for new AI/ML routes
+app.use('/api/injury-risk', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/performance-prediction', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/enhanced-coach', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 
 // Monitoring middleware
 app.use(backendMonitor.requestLogger.bind(backendMonitor));

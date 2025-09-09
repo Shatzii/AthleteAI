@@ -41,6 +41,10 @@ const Header = () => {
             Rankings
           </Link>
           <Link to="/ai-football-coach" className="nav-link">AI Coach</Link>
+          <Link to="/ai-dashboard" className="nav-link ai-dashboard-link">
+            <i className="fas fa-brain"></i>
+            AI Dashboard
+          </Link>
           <Link to="/ncaa-tracker" className="nav-link">NCAA Tracker</Link>
           <Link to="/international-sports" className="nav-link">International</Link>
           <Link to="/recruiting-hub" className="nav-link recruiting-link">Recruiting Hub</Link>

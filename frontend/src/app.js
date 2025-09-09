@@ -15,6 +15,7 @@ import StarPath from './components/StarPath';
 import RecruitingHub from './components/RecruitingHub';
 import Rankings from './components/Rankings';
 import OAuthCallback from './components/OAuthCallback';
+import AIDashboard from './components/AIDashboard';
 import './styles.css';
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
                             <Route path="/" exact component={LandingPage} />
                             <Route path="/auth/callback" component={OAuthCallback} />
                             <Route path="/dashboard" component={Dashboard} />
+                            <Route path="/ai-dashboard" component={AIDashboard} />
                             <Route path="/ai-football-coach" component={AIFootballCoach} />
                             <Route path="/ncaa-tracker" component={NCAA} />
                             <Route path="/players" component={Players} />

@@ -31,6 +31,13 @@ const oauthRoutes = require('./routes/oauthRoutes');
 const injuryRiskRoutes = require('./routes/injuryRiskRoutes');
 const performancePredictionRoutes = require('./routes/performancePredictionRoutes');
 const enhancedCoachRoutes = require('./routes/enhancedCoachRoutes');
+const recoveryRoutes = require('./routes/recoveryRoutes');
+const computerVisionRoutes = require('./routes/computerVisionRoutes');
+
+// Phase 2 routes
+const realTimeAnalyticsRoutes = require('./routes/realTimeAnalyticsRoutes');
+const teamPlatformRoutes = require('./routes/teamPlatformRoutes');
+const trainingProgramsRoutes = require('./routes/trainingProgramsRoutes');
 const authMiddleware = require('./middleware/auth');
 const { securityHeaders, apiLimiter, authLimiter, corsOptions } = require('./middleware/security');
 const backendMonitor = require('./utils/monitoring');
@@ -50,6 +57,11 @@ const DataStorageService = require('./services/dataStorageService');
 const ScheduledDataRefreshService = require('./services/scheduledDataRefreshService');
 const DataQualityMonitoringService = require('./services/dataQualityMonitoringService');
 
+// Import Phase 2 services
+const RealTimeAnalyticsService = require('./services/realTimeAnalyticsService');
+const TeamPlatformService = require('./services/teamPlatformService');
+const TrainingProgramsService = require('./services/trainingProgramsService');
+
 // Database connection - moved up before routes
 const { connectDB, getDBStats } = require('./config/database');
 connectDB().catch(err => console.error('Database connection failed:', err));
@@ -63,6 +75,11 @@ const messageQueueService = new MessageQueueService();
 const dataStorageService = new DataStorageService();
 const scheduledDataRefreshService = new ScheduledDataRefreshService();
 const dataQualityMonitoringService = new DataQualityMonitoringService();
+
+// Initialize Phase 2 services
+const realTimeAnalyticsService = new RealTimeAnalyticsService();
+const teamPlatformService = new TeamPlatformService();
+const trainingProgramsService = new TrainingProgramsService();
 
 // Middleware
 app.use(securityHeaders); // Security headers first
@@ -117,6 +134,11 @@ app.use('/api/v1/auth', oauthRoutes);
 //         await dataStorageService.initialize();
 //         await scheduledDataRefreshService.initialize();
 //         await dataQualityMonitoringService.initialize();
+
+//         // Initialize Phase 2 services
+//         await realTimeAnalyticsService.initialize();
+//         await teamPlatformService.initialize();
+//         await trainingProgramsService.initialize();
 
 //         // Start scheduled services
 //         await scheduledDataRefreshService.start();
@@ -279,6 +301,13 @@ app.use('/api/v1/rankings', cacheMiddleware(900), rankingRoutes); // Cache for 1
 app.use('/api/v1/injury-risk', injuryRiskRoutes); // Injury risk assessment
 app.use('/api/v1/performance-prediction', performancePredictionRoutes); // Performance prediction
 app.use('/api/v1/enhanced-coach', enhancedCoachRoutes); // Enhanced NLP coach
+app.use('/api/v1/recovery', recoveryRoutes); // Recovery optimization
+app.use('/api/v1/computer-vision', computerVisionRoutes); // Computer vision analysis
+
+// Phase 2 routes
+app.use('/api/v1/real-time-analytics', realTimeAnalyticsRoutes); // Real-time analytics
+app.use('/api/v1/team-platform', teamPlatformRoutes); // Team platform
+app.use('/api/v1/training-programs', trainingProgramsRoutes); // Training programs
 
 // Legacy routes (redirect to v1)
 app.use('/api/users', (req, res) => res.redirect(301, `/api/v1${req.path}`));
@@ -301,6 +330,13 @@ app.use('/api/rankings', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/injury-risk', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/performance-prediction', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/enhanced-coach', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/recovery', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/computer-vision', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+
+// Legacy redirects for Phase 2 routes
+app.use('/api/real-time-analytics', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/team-platform', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/training-programs', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 
 // Monitoring middleware
 app.use(backendMonitor.requestLogger.bind(backendMonitor));

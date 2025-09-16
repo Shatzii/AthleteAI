@@ -108,7 +108,7 @@ export const getDrillInfo = async (type) => {
 
 export const askAICoach = async (question) => {
     try {
-        const response = await axios.post(`${API_URL}/football/coach`, { question });
+        const response = await axios.post(`${API_URL}/football-coach/ask`, { question });
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -118,6 +118,42 @@ export const askAICoach = async (question) => {
 export const getVideoPlaylist = async () => {
     try {
         const response = await axios.get(`${API_URL}/football/videos`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+// Internationalization API functions
+export const getSupportedLanguages = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/i18n/languages`);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const setUserLanguage = async (language) => {
+    try {
+        const response = await axios.post(`${API_URL}/i18n/language`, { language }, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+};
+
+export const getUserLanguage = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/i18n/language`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`,
+            },
+        });
         return response.data;
     } catch (error) {
         throw error.response.data;

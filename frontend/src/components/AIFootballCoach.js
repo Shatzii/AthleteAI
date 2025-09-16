@@ -7,11 +7,13 @@ const AIFootballCoach = () => {
   const [audioVolume, setAudioVolume] = useState(0.8);
   const [currentVideo, setCurrentVideo] = useState(null);
   const [transcript, setTranscript] = useState([
-    { speaker: 'AI', text: 'Hello! I\'m your AI Football Coach. Ask me anything about football strategies or techniques.' }
+    { speaker: 'AI', text: 'Hello! I\'m your AI Football Coach. Ask me anything about football strategies, techniques, or training. I can provide personalized drills and video recommendations.' }
   ]);
   const [isProcessing, setIsProcessing] = useState(false);
   const [videos, setVideos] = useState([]);
   const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  const [currentDrills, setCurrentDrills] = useState([]);
+  const [currentSuggestions, setCurrentSuggestions] = useState([]);
   const transcriptRef = useRef(null);
 
   const footballVideos = {
@@ -103,18 +105,27 @@ const AIFootballCoach = () => {
     try {
       const response = await askAICoach(question);
       if (response.success) {
-        addToTranscript('AI', response.response);
+        const coachData = response.data;
+        addToTranscript('AI', coachData.response);
 
-        // If there's a video suggestion, load it
-        if (response.videoSuggestion) {
-          loadVideo(response.videoSuggestion.name || 'Football Strategy Video');
+        // Store drills and suggestions for display
+        setCurrentDrills(coachData.drills || []);
+        setCurrentSuggestions(coachData.suggestions || []);
+
+        // Load video if available
+        if (coachData.videos && coachData.videos.length > 0) {
+          loadVideo(coachData.videos[0].title || 'Football Training Video');
         }
       } else {
         addToTranscript('AI', 'I\'m sorry, I couldn\'t process that question. Please try asking about football strategies or techniques.');
+        setCurrentDrills([]);
+        setCurrentSuggestions([]);
       }
     } catch (error) {
       console.error('Error asking AI coach:', error);
       addToTranscript('AI', 'I\'m having trouble connecting to my knowledge base. Please try again in a moment.');
+      setCurrentDrills([]);
+      setCurrentSuggestions([]);
     } finally {
       setIsProcessing(false);
     }
@@ -315,6 +326,45 @@ const AIFootballCoach = () => {
               <li>"Explain [defense/offense] strategy"</li>
               <li>"What is [football term]?"</li>
             </ul>
+          </div>
+        </div>
+
+        <div className="card">
+          <h2 className="card-title">
+            <i className="fas fa-dumbbell"></i>
+            Recommended Drills
+          </h2>
+          <div className="drills-container">
+            {currentDrills.length > 0 ? (
+              currentDrills.map((drill, index) => (
+                <div key={index} className="drill-item">
+                  <h4>{drill.name}</h4>
+                  <p><strong>Duration:</strong> {drill.duration}</p>
+                  <p><strong>Focus:</strong> {drill.focus}</p>
+                </div>
+              ))
+            ) : (
+              <p>Drills will appear here based on your questions</p>
+            )}
+          </div>
+        </div>
+
+        <div className="card">
+          <h2 className="card-title">
+            <i className="fas fa-lightbulb"></i>
+            Coaching Tips
+          </h2>
+          <div className="tips-container">
+            {currentSuggestions.length > 0 ? (
+              currentSuggestions.map((tip, index) => (
+                <div key={index} className="tip-item">
+                  <i className="fas fa-check-circle"></i>
+                  <span>{tip}</span>
+                </div>
+              ))
+            ) : (
+              <p>Personalized tips will appear here based on your questions</p>
+            )}
           </div>
         </div>
       </div>

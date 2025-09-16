@@ -1,0 +1,137 @@
+.language-selector {
+  background: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.language-selector-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.language-selector-header i {
+  color: var(--accent-primary);
+  font-size: 1.2rem;
+}
+
+.language-selector-header span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.language-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-lg);
+}
+
+.language-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: var(--bg-secondary);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.language-option:hover {
+  border-color: var(--accent-primary);
+  background: rgba(0, 191, 255, 0.05);
+  transform: translateY(-2px);
+}
+
+.language-option.active {
+  border-color: var(--accent-primary);
+  background: rgba(0, 191, 255, 0.1);
+}
+
+.language-option:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.language-flag {
+  font-size: 1.5rem;
+}
+
+.language-info {
+  flex: 1;
+}
+
+.language-name {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 2px;
+}
+
+.language-native {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.language-check {
+  color: var(--accent-primary);
+  font-size: 1.1rem;
+}
+
+.language-changing,
+.language-selector-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-lg);
+  color: var(--text-secondary);
+}
+
+.language-changing i,
+.language-selector-loading i {
+  color: var(--accent-primary);
+}
+
+.language-footer {
+  text-align: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--border-color);
+}
+
+.language-footer small {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .language-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .language-option {
+    padding: var(--spacing-sm);
+  }
+
+  .language-flag {
+    font-size: 1.3rem;
+  }
+
+  .language-name {
+    font-size: 0.95rem;
+  }
+
+  .language-native {
+    font-size: 0.85rem;
+  }
+}

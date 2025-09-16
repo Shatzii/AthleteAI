@@ -1,0 +1,450 @@
+/* Predictive Analytics Dashboard Styles */
+
+.predictive-analytics-dashboard {
+  @apply space-y-6;
+}
+
+/* Summary Cards */
+.summary-card {
+  @apply bg-white rounded-lg shadow-sm border p-6 transition-all duration-200 hover:shadow-md;
+}
+
+.summary-card-icon {
+  @apply p-3 rounded-lg;
+}
+
+.summary-card-icon-blue {
+  @apply bg-blue-50 text-blue-600;
+}
+
+.summary-card-icon-red {
+  @apply bg-red-50 text-red-600;
+}
+
+.summary-card-icon-green {
+  @apply bg-green-50 text-green-600;
+}
+
+.summary-card-icon-yellow {
+  @apply bg-yellow-50 text-yellow-600;
+}
+
+.summary-card-icon-purple {
+  @apply bg-purple-50 text-purple-600;
+}
+
+.summary-card-title {
+  @apply text-sm font-medium text-gray-600 mb-1;
+}
+
+.summary-card-value {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+/* Chart Containers */
+.chart-container {
+  @apply bg-white rounded-lg shadow-sm border p-6;
+}
+
+.chart-header {
+  @apply flex items-center mb-6;
+}
+
+.chart-header-icon {
+  @apply mr-3;
+}
+
+.chart-header-icon-blue {
+  @apply text-blue-600;
+}
+
+.chart-header-icon-red {
+  @apply text-red-600;
+}
+
+.chart-header-icon-purple {
+  @apply text-purple-600;
+}
+
+.chart-header-title {
+  @apply text-xl font-semibold text-gray-900;
+}
+
+.chart-content {
+  @apply h-80;
+}
+
+/* Performance Trajectory */
+.performance-trajectory-chart {
+  @apply w-full h-full;
+}
+
+/* Injury Risk Assessment */
+.injury-risk-container {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+}
+
+.risk-probability-section {
+  @apply space-y-4;
+}
+
+.risk-probability-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.risk-probability-bar {
+  @apply w-full bg-gray-200 rounded-full h-4;
+}
+
+.risk-probability-fill-high {
+  @apply bg-red-500 h-4 rounded-full;
+}
+
+.risk-probability-fill-medium {
+  @apply bg-yellow-500 h-4 rounded-full;
+}
+
+.risk-probability-fill-low {
+  @apply bg-green-500 h-4 rounded-full;
+}
+
+.risk-probability-value {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.risk-factors-section {
+  @apply space-y-3;
+}
+
+.risk-factors-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.risk-factor-item {
+  @apply flex items-center justify-between py-2;
+}
+
+.risk-factor-name {
+  @apply text-sm text-gray-600;
+}
+
+.risk-factor-severity-high {
+  @apply text-xs px-2 py-1 rounded-full bg-red-100 text-red-800;
+}
+
+.risk-factor-severity-medium {
+  @apply text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800;
+}
+
+.risk-factor-severity-low {
+  @apply text-xs px-2 py-1 rounded-full bg-green-100 text-green-800;
+}
+
+.recommendations-section {
+  @apply mt-6;
+}
+
+.recommendations-title {
+  @apply text-sm font-medium text-gray-700 mb-3;
+}
+
+.recommendations-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.recommendation-card-critical {
+  @apply p-3 rounded-lg border bg-red-50 border-red-200;
+}
+
+.recommendation-card-high {
+  @apply p-3 rounded-lg border bg-orange-50 border-orange-200;
+}
+
+.recommendation-card-medium {
+  @apply p-3 rounded-lg border bg-yellow-50 border-yellow-200;
+}
+
+.recommendation-card-low {
+  @apply p-3 rounded-lg border bg-gray-50 border-gray-200;
+}
+
+.recommendation-content {
+  @apply flex items-start justify-between;
+}
+
+.recommendation-text {
+  @apply flex-1;
+}
+
+.recommendation-title {
+  @apply text-sm font-medium;
+}
+
+.recommendation-description {
+  @apply text-xs mt-1;
+}
+
+.recommendation-priority {
+  @apply text-xs font-medium px-2 py-1 rounded-full bg-white bg-opacity-50;
+}
+
+/* Comparative Analysis */
+.comparative-analysis-container {
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-6;
+}
+
+.performance-radar-section {
+  @apply space-y-4;
+}
+
+.performance-radar-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.similar-athletes-section {
+  @apply space-y-3;
+}
+
+.similar-athletes-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.similar-athlete-card {
+  @apply flex items-center justify-between p-3 bg-gray-50 rounded-lg;
+}
+
+.similar-athlete-info {
+  @apply flex-1;
+}
+
+.similar-athlete-name {
+  @apply font-medium text-gray-900;
+}
+
+.similar-athlete-similarity {
+  @apply text-sm text-gray-600;
+}
+
+.similarity-bar-container {
+  @apply w-16 bg-gray-200 rounded-full h-2;
+}
+
+.similarity-bar-fill {
+  @apply bg-purple-500 h-2 rounded-full;
+}
+
+.strengths-improvements-section {
+  @apply mt-6 grid grid-cols-1 md:grid-cols-2 gap-6;
+}
+
+.strengths-section {
+  @apply space-y-2;
+}
+
+.strengths-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.strength-item {
+  @apply flex items-center p-2 bg-green-50 rounded;
+}
+
+.strength-icon {
+  @apply h-4 w-4 text-green-600 mr-2;
+}
+
+.strength-text {
+  @apply text-sm text-green-800;
+}
+
+.improvements-section {
+  @apply space-y-2;
+}
+
+.improvements-title {
+  @apply text-sm font-medium text-gray-700;
+}
+
+.improvement-item {
+  @apply flex items-center p-2 bg-yellow-50 rounded;
+}
+
+.improvement-icon {
+  @apply h-4 w-4 text-yellow-600 mr-2;
+}
+
+.improvement-text {
+  @apply text-sm text-yellow-800;
+}
+
+/* Insights */
+.insights-section {
+  @apply mt-4 grid grid-cols-1 md:grid-cols-2 gap-4;
+}
+
+.insight-card-positive {
+  @apply p-4 rounded-lg border bg-green-50 border-green-200 text-green-800;
+}
+
+.insight-card-info {
+  @apply p-4 rounded-lg border bg-blue-50 border-blue-200 text-blue-800;
+}
+
+.insight-card-warning {
+  @apply p-4 rounded-lg border bg-yellow-50 border-yellow-200 text-yellow-800;
+}
+
+.insight-content {
+  @apply flex items-start;
+}
+
+.insight-icon {
+  @apply flex-shrink-0 mr-3;
+}
+
+.insight-text {
+  @apply flex-1;
+}
+
+.insight-title {
+  @apply text-sm font-medium;
+}
+
+.insight-description {
+  @apply text-sm mt-1;
+}
+
+/* Loading States */
+.loading-spinner {
+  @apply flex items-center justify-center h-64;
+}
+
+.loading-spinner-icon {
+  @apply animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600;
+}
+
+/* Error States */
+.error-message {
+  @apply bg-red-50 border border-red-200 rounded-lg p-4;
+}
+
+.error-content {
+  @apply flex items-center;
+}
+
+.error-icon {
+  @apply h-5 w-5 text-red-400 mr-2;
+}
+
+.error-text {
+  @apply text-red-800;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .summary-cards-grid {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .injury-risk-container,
+  .comparative-analysis-container {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .recommendations-grid,
+  .strengths-improvements-section {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .insights-section {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .chart-content {
+    @apply h-64;
+  }
+}
+
+@media (max-width: 640px) {
+  .summary-card {
+    @apply p-4;
+  }
+
+  .chart-container {
+    @apply p-4;
+  }
+
+  .summary-card-value {
+    @apply text-2xl;
+  }
+
+  .chart-header-title {
+    @apply text-lg;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Hover Effects */
+.summary-card:hover {
+  @apply shadow-md transform scale-105;
+  transition: all 0.2s ease-in-out;
+}
+
+.recommendation-card:hover {
+  @apply shadow-sm;
+  transition: all 0.2s ease-in-out;
+}
+
+.similar-athlete-card:hover {
+  @apply bg-gray-100;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Custom Tooltip Styles for Charts */
+.recharts-tooltip-wrapper {
+  outline: none;
+}
+
+.recharts-default-tooltip {
+  @apply bg-white border border-gray-200 rounded-lg shadow-lg p-3;
+}
+
+.recharts-tooltip-label {
+  @apply text-gray-900 font-medium mb-1;
+}
+
+.recharts-tooltip-item {
+  @apply text-gray-700;
+}
+
+.recharts-tooltip-item-list {
+  @apply space-y-1;
+}
+
+/* Custom Legend Styles */
+.recharts-legend-wrapper {
+  @apply mb-4;
+}
+
+.recharts-legend-item {
+  @apply mr-4;
+}
+
+.recharts-legend-item-text {
+  @apply text-gray-700 text-sm;
+}

@@ -38,6 +38,35 @@ const computerVisionRoutes = require('./routes/computerVisionRoutes');
 const realTimeAnalyticsRoutes = require('./routes/realTimeAnalyticsRoutes');
 const teamPlatformRoutes = require('./routes/teamPlatformRoutes');
 const trainingProgramsRoutes = require('./routes/trainingProgramsRoutes');
+const personalizationRoutes = require('./routes/personalizationRoutes');
+const wearableRoutes = require('./routes/wearableRoutes');
+const socialRoutes = require('./routes/socialRoutes');
+const achievementRoutes = require('./routes/achievementRoutes');
+const standaloneFootballCoachRoutes = require('./routes/standaloneFootballCoachRoutes');
+const i18nRoutes = require('./routes/i18nRoutes');
+
+// E-commerce routes
+const ecommerceRoutes = require('./routes/ecommerceRoutes');
+
+// Voice Coach routes
+const voiceCoachRoutes = require('./routes/voiceCoachRoutes');
+
+// Predictive Analytics routes
+const predictiveAnalyticsRoutes = require('./routes/predictiveAnalyticsRoutes');
+
+// API Ecosystem routes
+const apiEcosystemRoutes = require('./routes/apiEcosystemRoutes');
+
+// Real-Time Collaboration routes
+const realTimeCollaborationRoutes = require('./routes/realTimeCollaborationRoutes');
+
+// Advanced Injury Prevention routes
+const advancedInjuryPreventionRoutes = require('./routes/advancedInjuryPreventionRoutes');
+
+// Institutional Partnerships routes
+const institutionalPartnershipsRoutes = require('./routes/institutionalPartnershipsRoutes');
+
+// Middleware
 const authMiddleware = require('./middleware/auth');
 const { securityHeaders, apiLimiter, authLimiter, corsOptions } = require('./middleware/security');
 const backendMonitor = require('./utils/monitoring');
@@ -61,6 +90,9 @@ const DataQualityMonitoringService = require('./services/dataQualityMonitoringSe
 const RealTimeAnalyticsService = require('./services/realTimeAnalyticsService');
 const TeamPlatformService = require('./services/teamPlatformService');
 const TrainingProgramsService = require('./services/trainingProgramsService');
+const PersonalizationEngine = require('./services/personalizationEngine');
+const WearableIntegrationService = require('./services/wearableIntegrationService');
+const SocialCommunityService = require('./services/socialCommunityService');
 
 // Database connection - moved up before routes
 const { connectDB, getDBStats } = require('./config/database');
@@ -80,6 +112,9 @@ const dataQualityMonitoringService = new DataQualityMonitoringService();
 const realTimeAnalyticsService = new RealTimeAnalyticsService();
 const teamPlatformService = new TeamPlatformService();
 const trainingProgramsService = new TrainingProgramsService();
+const personalizationEngine = new PersonalizationEngine();
+const wearableIntegrationService = new WearableIntegrationService();
+const socialCommunityService = new SocialCommunityService();
 
 // Middleware
 app.use(securityHeaders); // Security headers first
@@ -313,6 +348,19 @@ app.use('/api/v1/computer-vision', computerVisionRoutes); // Computer vision ana
 app.use('/api/v1/real-time-analytics', realTimeAnalyticsRoutes); // Real-time analytics
 app.use('/api/v1/team-platform', teamPlatformRoutes); // Team platform
 app.use('/api/v1/training-programs', trainingProgramsRoutes); // Training programs
+app.use('/api/v1/personalization', personalizationRoutes); // AI personalization engine
+app.use('/api/v1/wearable', wearableRoutes); // Wearable device integration
+app.use('/api/v1/social', socialRoutes); // Social community platform
+app.use('/api/v1/achievements', achievementRoutes); // Enhanced gamification & achievement system
+app.use('/api/v1/football-coach', standaloneFootballCoachRoutes); // Standalone self-hosted AI football coach
+app.use('/api/v1/i18n', i18nRoutes); // Internationalization & localization
+app.use('/api/v1/ecommerce', ecommerceRoutes); // E-commerce marketplace
+app.use('/api/v1/voice', voiceCoachRoutes); // Voice-activated AI coach
+app.use('/api/v1/analytics', predictiveAnalyticsRoutes); // Advanced predictive analytics dashboard
+app.use('/api/v1/ecosystem', apiEcosystemRoutes); // API ecosystem routes
+app.use('/api/v1/collaboration', realTimeCollaborationRoutes); // Real-time collaboration tools
+app.use('/api/v1/injury-prevention', advancedInjuryPreventionRoutes); // Advanced injury prevention system
+app.use('/api/v1/institutions', institutionalPartnershipsRoutes); // Institutional partnerships program
 
 // Legacy routes (redirect to v1)
 app.use('/api/users', (req, res) => res.redirect(301, `/api/v1${req.path}`));
@@ -342,6 +390,10 @@ app.use('/api/computer-vision', (req, res) => res.redirect(301, `/api/v1${req.pa
 app.use('/api/real-time-analytics', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/team-platform', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 app.use('/api/training-programs', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/personalization', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/wearable', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/social', (req, res) => res.redirect(301, `/api/v1${req.path}`));
+app.use('/api/achievements', (req, res) => res.redirect(301, `/api/v1${req.path}`));
 
 // Monitoring middleware
 app.use(backendMonitor.requestLogger.bind(backendMonitor));

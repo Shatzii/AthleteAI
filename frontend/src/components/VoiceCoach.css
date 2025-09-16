@@ -1,0 +1,393 @@
+/* Voice Coach Component Styles */
+
+.voice-coach-container {
+  @apply space-y-6;
+}
+
+/* Session Status */
+.session-status {
+  @apply flex items-center space-x-2;
+}
+
+.session-status-indicator {
+  @apply w-3 h-3 bg-green-500 rounded-full animate-pulse;
+}
+
+.session-status-text {
+  @apply text-sm font-medium text-gray-900;
+}
+
+.coach-name {
+  @apply text-sm text-gray-600;
+}
+
+/* Voice Controls */
+.voice-controls {
+  @apply flex items-center justify-center space-x-4 mb-6;
+}
+
+.record-button {
+  @apply flex items-center space-x-2 px-6 py-3 rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2;
+}
+
+.record-button-recording {
+  @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+}
+
+.record-button-idle {
+  @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.record-button-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+.processing-indicator {
+  @apply flex items-center space-x-2 text-gray-600;
+}
+
+.processing-spinner {
+  @apply animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600;
+}
+
+/* Text Input Mode */
+.text-input-container {
+  @apply flex space-x-4 mb-6;
+}
+
+.text-input {
+  @apply flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+.text-send-button {
+  @apply bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+.text-send-button-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Conversation History */
+.conversation-container {
+  @apply bg-white rounded-lg shadow-sm border p-6;
+}
+
+.conversation-header {
+  @apply text-lg font-semibold text-gray-900 mb-4;
+}
+
+.conversation-messages {
+  @apply space-y-4 max-h-96 overflow-y-auto;
+}
+
+.message-container {
+  @apply flex;
+}
+
+.message-user {
+  @apply justify-end;
+}
+
+.message-coach {
+  @apply justify-start;
+}
+
+.message-bubble {
+  @apply max-w-xs lg:max-w-md px-4 py-2 rounded-lg;
+}
+
+.message-bubble-user {
+  @apply bg-blue-600 text-white;
+}
+
+.message-bubble-coach {
+  @apply bg-gray-100 text-gray-900;
+}
+
+.message-text {
+  @apply text-sm;
+}
+
+.message-audio-button {
+  @apply mt-2 flex items-center space-x-1 text-xs opacity-75 hover:opacity-100;
+}
+
+.message-confidence {
+  @apply text-xs opacity-75 mt-1;
+}
+
+/* Voice Preferences */
+.voice-preferences {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-4 mb-6;
+}
+
+.preference-group {
+  @apply space-y-2;
+}
+
+.preference-label {
+  @apply block text-sm font-medium text-gray-700;
+}
+
+.preference-select {
+  @apply w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500;
+}
+
+/* Start Session */
+.start-session-container {
+  @apply bg-white rounded-lg shadow-sm border p-6;
+}
+
+.start-session-content {
+  @apply text-center;
+}
+
+.start-session-title {
+  @apply text-lg font-semibold text-gray-900 mb-4;
+}
+
+.start-session-button {
+  @apply bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+}
+
+/* Mode Toggle */
+.mode-toggle {
+  @apply px-4 py-2 rounded-lg font-medium;
+}
+
+.mode-toggle-active {
+  @apply bg-blue-100 text-blue-700;
+}
+
+.mode-toggle-inactive {
+  @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+}
+
+/* Settings Button */
+.settings-button {
+  @apply p-2 text-gray-600 hover:text-gray-900;
+}
+
+/* Error Display */
+.error-container {
+  @apply bg-red-50 border border-red-200 rounded-lg p-4;
+}
+
+.error-content {
+  @apply flex items-center;
+}
+
+.error-icon {
+  @apply flex-shrink-0;
+}
+
+.error-icon-svg {
+  @apply h-5 w-5 text-red-400;
+}
+
+.error-text-container {
+  @apply ml-3;
+}
+
+.error-text {
+  @apply text-sm text-red-800;
+}
+
+/* End Session Button */
+.end-session-button {
+  @apply flex items-center space-x-2 bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2;
+}
+
+/* Hidden Audio Element */
+.hidden-audio {
+  @apply hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .voice-controls {
+    @apply flex-col space-y-4 space-x-0;
+  }
+
+  .text-input-container {
+    @apply flex-col space-y-4 space-x-0;
+  }
+
+  .message-bubble {
+    @apply max-w-sm;
+  }
+
+  .voice-preferences {
+    @apply grid-cols-1 gap-4;
+  }
+
+  .start-session-button {
+    @apply w-full;
+  }
+}
+
+@media (max-width: 640px) {
+  .conversation-messages {
+    @apply max-h-80;
+  }
+
+  .record-button {
+    @apply px-4 py-2 text-sm;
+  }
+
+  .text-send-button {
+    @apply px-4 py-2 text-sm;
+  }
+}
+
+/* Animations */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.33);
+    opacity: 1;
+  }
+  40%, 50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.recording-pulse::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border: 2px solid rgba(239, 68, 68, 0.5);
+  border-radius: 50%;
+  animation: pulse-ring 1.5s infinite;
+}
+
+.record-button-recording {
+  position: relative;
+}
+
+/* Message Animations */
+.message-enter {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.message-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.message-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.message-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Voice Wave Animation */
+.voice-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.voice-wave-bar {
+  width: 3px;
+  height: 20px;
+  background-color: #ef4444;
+  border-radius: 2px;
+  animation: wave 1.5s ease-in-out infinite;
+}
+
+.voice-wave-bar:nth-child(1) { animation-delay: 0s; }
+.voice-wave-bar:nth-child(2) { animation-delay: 0.1s; }
+.voice-wave-bar:nth-child(3) { animation-delay: 0.2s; }
+.voice-wave-bar:nth-child(4) { animation-delay: 0.3s; }
+.voice-wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes wave {
+  0%, 100% {
+    height: 20px;
+    opacity: 0.4;
+  }
+  50% {
+    height: 40px;
+    opacity: 1;
+  }
+}
+
+/* Loading States */
+.loading-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.loading-content {
+  @apply bg-white rounded-lg p-6 flex items-center space-x-4;
+}
+
+.loading-spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600;
+}
+
+.loading-text {
+  @apply text-gray-900 font-medium;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .session-status-indicator {
+    @apply animate-none;
+  }
+
+  .processing-spinner {
+    @apply animate-none;
+  }
+
+  .voice-wave-bar {
+    @apply animate-none;
+  }
+}
+
+/* Focus States */
+.record-button:focus {
+  @apply ring-2 ring-offset-2;
+}
+
+.text-input:focus {
+  @apply ring-2 ring-blue-500;
+}
+
+.preference-select:focus {
+  @apply ring-2 ring-blue-500;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .message-bubble-user {
+    @apply bg-black text-white;
+  }
+
+  .message-bubble-coach {
+    @apply bg-white text-black border-2 border-black;
+  }
+
+  .record-button-recording {
+    @apply bg-black text-white border-2 border-red-500;
+  }
+
+  .record-button-idle {
+    @apply bg-black text-white border-2 border-blue-500;
+  }
+}

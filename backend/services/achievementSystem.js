@@ -127,6 +127,12 @@ class AchievementSystem {
         this.leaderboards = new Map();
         this.userStats = new Map();
         this.userAchievements = new Map();
+        this.dynamicChallenges = new Map();
+        this.seasonalCompetitions = new Map();
+        this.virtualRewards = new Map();
+        this.userRewards = new Map();
+        this.challengeProgress = new Map();
+        this.competitionStandings = new Map();
     }
 
     // Initialize user stats
@@ -412,6 +418,512 @@ class AchievementSystem {
                 achievement: this.achievements[id],
                 unlockedCount: count
             }));
+    }
+
+    // Create a dynamic challenge
+    createDynamicChallenge(challengeData) {
+        const challengeId = `dynamic_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+        const challenge = {
+            id: challengeId,
+            title: challengeData.title,
+            description: challengeData.description,
+            type: challengeData.type, // 'individual', 'team', 'time-limited'
+            category: challengeData.category, // 'fitness', 'social', 'learning', etc.
+            requirements: challengeData.requirements, // What needs to be accomplished
+            rewards: challengeData.rewards || [],
+            startDate: challengeData.startDate || new Date(),
+            endDate: challengeData.endDate,
+            maxParticipants: challengeData.maxParticipants || 1000,
+            participants: new Map(),
+            isActive: true,
+            createdBy: challengeData.createdBy,
+            difficulty: challengeData.difficulty || 'medium',
+            tags: challengeData.tags || []
+        };
+
+        this.dynamicChallenges.set(challengeId, challenge);
+        return challenge;
+    }
+
+    // Join a dynamic challenge
+    joinDynamicChallenge(challengeId, userId) {
+        const challenge = this.dynamicChallenges.get(challengeId);
+        if (!challenge) {
+            throw new Error('Challenge not found');
+        }
+
+        if (!challenge.isActive) {
+            throw new Error('Challenge is not active');
+        }
+
+        if (challenge.participants.size >= challenge.maxParticipants) {
+            throw new Error('Challenge is full');
+        }
+
+        if (challenge.participants.has(userId)) {
+            throw new Error('Already participating in this challenge');
+        }
+
+        challenge.participants.set(userId, {
+            joinedAt: new Date(),
+            progress: 0,
+            completedTasks: new Set(),
+            lastUpdate: new Date()
+        });
+
+        // Initialize challenge progress tracking
+        if (!this.challengeProgress.has(userId)) {
+            this.challengeProgress.set(userId, new Map());
+        }
+        this.challengeProgress.get(userId).set(challengeId, {
+            progress: 0,
+            milestones: [],
+            startTime: new Date()
+        });
+
+        return challenge;
+    }
+
+    // Update challenge progress
+    updateChallengeProgress(challengeId, userId, progressData) {
+        const challenge = this.dynamicChallenges.get(challengeId);
+        if (!challenge) {
+            throw new Error('Challenge not found');
+        }
+
+        const participant = challenge.participants.get(userId);
+        if (!participant) {
+            throw new Error('Not participating in this challenge');
+        }
+
+        // Update progress
+        participant.progress = progressData.progress || participant.progress;
+        participant.lastUpdate = new Date();
+
+        // Track completed tasks
+        if (progressData.completedTask) {
+            participant.completedTasks.add(progressData.completedTask);
+        }
+
+        // Update challenge progress tracking
+        const userProgress = this.challengeProgress.get(userId)?.get(challengeId);
+        if (userProgress) {
+            userProgress.progress = participant.progress;
+            userProgress.milestones.push({
+                timestamp: new Date(),
+                progress: participant.progress,
+                description: progressData.description || 'Progress update'
+            });
+        }
+
+        // Check if challenge is completed
+        if (this.isChallengeCompleted(challenge, participant)) {
+            this.completeChallenge(challengeId, userId);
+        }
+
+        return participant;
+    }
+
+    // Check if challenge is completed
+    isChallengeCompleted(challenge, participant) {
+        // Simple completion check based on progress threshold
+        return participant.progress >= 100;
+    }
+
+    // Complete a challenge and award rewards
+    completeChallenge(challengeId, userId) {
+        const challenge = this.dynamicChallenges.get(challengeId);
+        const participant = challenge.participants.get(userId);
+
+        if (!participant.completedAt) {
+            participant.completedAt = new Date();
+            participant.finalRank = this.calculateChallengeRank(challenge, userId);
+
+            // Award rewards
+            this.awardChallengeRewards(challengeId, userId, participant.finalRank);
+
+            // Update user stats
+            const userStats = this.userStats.get(userId);
+            if (userStats) {
+                userStats.challenges_completed = (userStats.challenges_completed || 0) + 1;
+                userStats.total_points += challenge.rewards.points || 0;
+            }
+        }
+
+        return participant;
+    }
+
+    // Calculate rank in challenge
+    calculateChallengeRank(challenge, userId) {
+        const participants = Array.from(challenge.participants.entries())
+            .filter(([_, p]) => p.completedAt)
+            .sort((a, b) => new Date(a[1].completedAt) - new Date(b[1].completedAt));
+
+        const rank = participants.findIndex(([id, _]) => id === userId) + 1;
+        return rank;
+    }
+
+    // Award challenge rewards
+    awardChallengeRewards(challengeId, userId, rank) {
+        const challenge = this.dynamicChallenges.get(challengeId);
+        const rewards = challenge.rewards;
+
+        if (!this.userRewards.has(userId)) {
+            this.userRewards.set(userId, []);
+        }
+
+        const userRewards = this.userRewards.get(userId);
+
+        // Base completion reward
+        if (rewards.points) {
+            userRewards.push({
+                id: `challenge_${challengeId}_completion`,
+                type: 'points',
+                value: rewards.points,
+                description: `Completed challenge: ${challenge.title}`,
+                earnedAt: new Date(),
+                source: 'challenge_completion'
+            });
+        }
+
+        // Rank-based rewards
+        if (rank === 1 && rewards.firstPlaceReward) {
+            userRewards.push({
+                id: `challenge_${challengeId}_first_place`,
+                type: 'special',
+                value: rewards.firstPlaceReward,
+                description: `Won 1st place in: ${challenge.title}`,
+                earnedAt: new Date(),
+                source: 'challenge_rank'
+            });
+        } else if (rank <= 3 && rewards.topThreeReward) {
+            userRewards.push({
+                id: `challenge_${challengeId}_top_three`,
+                type: 'special',
+                value: rewards.topThreeReward,
+                description: `Top 3 finish in: ${challenge.title}`,
+                earnedAt: new Date(),
+                source: 'challenge_rank'
+            });
+        }
+
+        // Virtual items
+        if (rewards.virtualItems) {
+            rewards.virtualItems.forEach(item => {
+                userRewards.push({
+                    id: `challenge_${challengeId}_item_${item.id}`,
+                    type: 'virtual_item',
+                    value: item,
+                    description: `Earned virtual item: ${item.name}`,
+                    earnedAt: new Date(),
+                    source: 'challenge_completion'
+                });
+            });
+        }
+    }
+
+    // Create a seasonal competition
+    createSeasonalCompetition(competitionData) {
+        const competitionId = `season_${competitionData.season}_${competitionData.year}`;
+
+        const competition = {
+            id: competitionId,
+            name: competitionData.name,
+            description: competitionData.description,
+            season: competitionData.season, // 'spring', 'summer', 'fall', 'winter'
+            year: competitionData.year,
+            startDate: competitionData.startDate,
+            endDate: competitionData.endDate,
+            categories: competitionData.categories || [], // Different competition categories
+            scoringSystem: competitionData.scoringSystem || 'points', // 'points', 'time', 'distance'
+            leaderboard: new Map(),
+            participants: new Map(),
+            prizes: competitionData.prizes || [],
+            isActive: true,
+            rules: competitionData.rules || [],
+            sponsors: competitionData.sponsors || []
+        };
+
+        this.seasonalCompetitions.set(competitionId, competition);
+        this.competitionStandings.set(competitionId, new Map());
+
+        return competition;
+    }
+
+    // Join a seasonal competition
+    joinSeasonalCompetition(competitionId, userId, category = 'general') {
+        const competition = this.seasonalCompetitions.get(competitionId);
+        if (!competition) {
+            throw new Error('Competition not found');
+        }
+
+        if (!competition.isActive) {
+            throw new Error('Competition is not active');
+        }
+
+        if (!competition.categories.includes(category) && category !== 'general') {
+            throw new Error('Invalid competition category');
+        }
+
+        competition.participants.set(userId, {
+            joinedAt: new Date(),
+            category,
+            score: 0,
+            achievements: [],
+            lastActivity: new Date()
+        });
+
+        // Initialize standings
+        const standings = this.competitionStandings.get(competitionId);
+        standings.set(userId, {
+            score: 0,
+            rank: 0,
+            category,
+            lastUpdate: new Date()
+        });
+
+        this.updateCompetitionStandings(competitionId);
+
+        return competition;
+    }
+
+    // Update competition score
+    updateCompetitionScore(competitionId, userId, scoreIncrement, activityType) {
+        const competition = this.seasonalCompetitions.get(competitionId);
+        if (!competition) {
+            throw new Error('Competition not found');
+        }
+
+        const participant = competition.participants.get(userId);
+        if (!participant) {
+            throw new Error('Not participating in this competition');
+        }
+
+        // Update participant score
+        participant.score += scoreIncrement;
+        participant.lastActivity = new Date();
+
+        // Record achievement
+        participant.achievements.push({
+            timestamp: new Date(),
+            activityType,
+            scoreIncrement,
+            totalScore: participant.score
+        });
+
+        // Update standings
+        const standings = this.competitionStandings.get(competitionId);
+        const userStanding = standings.get(userId);
+        userStanding.score = participant.score;
+        userStanding.lastUpdate = new Date();
+
+        this.updateCompetitionStandings(competitionId);
+
+        return participant;
+    }
+
+    // Update competition standings
+    updateCompetitionStandings(competitionId) {
+        const competition = this.seasonalCompetitions.get(competitionId);
+        const standings = this.competitionStandings.get(competitionId);
+
+        // Sort participants by score
+        const sortedParticipants = Array.from(standings.entries())
+            .sort((a, b) => b[1].score - a[1].score);
+
+        // Update ranks
+        sortedParticipants.forEach(([userId, standing], index) => {
+            standing.rank = index + 1;
+        });
+
+        competition.leaderboard = sortedParticipants.slice(0, 50); // Top 50
+    }
+
+    // Create virtual rewards catalog
+    initializeVirtualRewards() {
+        this.virtualRewards.set('profile_badges', [
+            {
+                id: 'champion_badge',
+                name: 'Champion Badge',
+                description: 'Awarded to challenge winners',
+                icon: '🏆',
+                rarity: 'epic',
+                unlockCondition: 'Win a challenge'
+            },
+            {
+                id: 'consistency_badge',
+                name: 'Consistency Badge',
+                description: 'Awarded for completing 10 challenges',
+                icon: '📅',
+                rarity: 'rare',
+                unlockCondition: 'Complete 10 challenges'
+            },
+            {
+                id: 'social_badge',
+                name: 'Social Butterfly',
+                description: 'Awarded for helping 50 community members',
+                icon: '🦋',
+                rarity: 'uncommon',
+                unlockCondition: 'Help 50 community members'
+            }
+        ]);
+
+        this.virtualRewards.set('profile_themes', [
+            {
+                id: 'champion_theme',
+                name: 'Champion Theme',
+                description: 'Exclusive theme for top performers',
+                colors: ['#FFD700', '#FFA500', '#FF6347'],
+                unlockCondition: 'Reach top 10 in seasonal competition'
+            },
+            {
+                id: 'elite_theme',
+                name: 'Elite Theme',
+                description: 'Premium theme for elite athletes',
+                colors: ['#4A90E2', '#7ED321', '#D0021B'],
+                unlockCondition: 'Achieve elite status'
+            }
+        ]);
+
+        this.virtualRewards.set('virtual_goods', [
+            {
+                id: 'training_booster',
+                name: 'Training Booster',
+                description: '25% XP boost for 24 hours',
+                duration: 24 * 60 * 60 * 1000, // 24 hours
+                effect: 'xp_multiplier',
+                value: 1.25,
+                unlockCondition: 'Complete weekly challenge'
+            },
+            {
+                id: 'insight_unlock',
+                name: 'Advanced Insight',
+                description: 'Unlock advanced analytics for 7 days',
+                duration: 7 * 24 * 60 * 60 * 1000, // 7 days
+                effect: 'advanced_analytics',
+                unlockCondition: 'Share 10 training insights'
+            }
+        ]);
+    }
+
+    // Award virtual reward
+    awardVirtualReward(userId, rewardType, rewardId) {
+        const rewards = this.virtualRewards.get(rewardType);
+        if (!rewards) {
+            throw new Error('Invalid reward type');
+        }
+
+        const reward = rewards.find(r => r.id === rewardId);
+        if (!reward) {
+            throw new Error('Reward not found');
+        }
+
+        if (!this.userRewards.has(userId)) {
+            this.userRewards.set(userId, []);
+        }
+
+        const userRewards = this.userRewards.get(userId);
+
+        // Check if already owned
+        const alreadyOwned = userRewards.some(r => r.id === rewardId && r.type === 'virtual_item');
+        if (alreadyOwned) {
+            throw new Error('Reward already owned');
+        }
+
+        userRewards.push({
+            id: rewardId,
+            type: 'virtual_item',
+            value: reward,
+            description: `Earned virtual reward: ${reward.name}`,
+            earnedAt: new Date(),
+            source: 'achievement_system'
+        });
+
+        return reward;
+    }
+
+    // Get user rewards
+    getUserRewards(userId) {
+        return this.userRewards.get(userId) || [];
+    }
+
+    // Get active dynamic challenges
+    getActiveChallenges(filters = {}) {
+        const challenges = Array.from(this.dynamicChallenges.values())
+            .filter(c => c.isActive);
+
+        // Apply filters
+        if (filters.category) {
+            challenges = challenges.filter(c => c.category === filters.category);
+        }
+
+        if (filters.difficulty) {
+            challenges = challenges.filter(c => c.difficulty === filters.difficulty);
+        }
+
+        if (filters.type) {
+            challenges = challenges.filter(c => c.type === filters.type);
+        }
+
+        return challenges.map(c => ({
+            id: c.id,
+            title: c.title,
+            description: c.description,
+            type: c.type,
+            category: c.category,
+            difficulty: c.difficulty,
+            participants: c.participants.size,
+            maxParticipants: c.maxParticipants,
+            endDate: c.endDate,
+            rewards: c.rewards,
+            tags: c.tags
+        }));
+    }
+
+    // Get seasonal competitions
+    getSeasonalCompetitions(season = null, year = null) {
+        let competitions = Array.from(this.seasonalCompetitions.values());
+
+        if (season) {
+            competitions = competitions.filter(c => c.season === season);
+        }
+
+        if (year) {
+            competitions = competitions.filter(c => c.year === year);
+        }
+
+        return competitions.map(c => ({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            season: c.season,
+            year: c.year,
+            startDate: c.startDate,
+            endDate: c.endDate,
+            categories: c.categories,
+            leaderboard: c.leaderboard.slice(0, 10), // Top 10
+            participantCount: c.participants.size,
+            isActive: c.isActive
+        }));
+    }
+
+    // Get virtual rewards catalog
+    getVirtualRewardsCatalog() {
+        const catalog = {};
+
+        for (const [category, rewards] of this.virtualRewards.entries()) {
+            catalog[category] = rewards.map(reward => ({
+                id: reward.id,
+                name: reward.name,
+                description: reward.description,
+                icon: reward.icon,
+                rarity: reward.rarity,
+                unlockCondition: reward.unlockCondition
+            }));
+        }
+
+        return catalog;
     }
 }
 

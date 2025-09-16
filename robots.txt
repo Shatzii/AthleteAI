@@ -1,0 +1,11 @@
+# Robots.txt for Go4It Sports
+# Allow all web crawlers to access the site
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://go4itsports.org/sitemap.xml
+
+# Crawl delay (optional)
+Crawl-delay: 1

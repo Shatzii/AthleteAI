@@ -116,6 +116,11 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Serve static files from frontend public directory
 app.use(express.static(path.join(__dirname, '../frontend/public')));
 
+// Serve React app for root path
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+});
+
 // OAuth routes
 app.use('/api/v1/auth', oauthRoutes);
 
@@ -417,10 +422,15 @@ if (require.main === module) {
 
 // 404 handler - MUST be last
 app.use('*', (req, res) => {
-    res.status(404).json({
-        success: false,
-        message: 'Route not found'
-    });
+    // Serve React app for client-side routing (exclude API routes)
+    if (!req.path.startsWith('/api/') && !req.path.startsWith('/uploads/')) {
+        res.sendFile(path.join(__dirname, '../frontend/public/index.html'));
+    } else {
+        res.status(404).json({
+            success: false,
+            message: 'Route not found'
+        });
+    }
 });
 
 // Graceful shutdown handling

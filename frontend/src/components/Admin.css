@@ -1,48 +1,52 @@
+/* ===========================================
+   ADMIN DASHBOARD COMPONENT - USING DESIGN SYSTEM
+   =========================================== */
+
 .admin-dashboard {
   max-width: 1400px;
   margin: 0 auto;
-  padding: var(--spacing-lg);
-  font-family: var(--font-family-secondary);
+  padding: var(--spacing-6);
+  font-family: var(--font-family-primary);
 }
 
 .admin-header {
   text-align: center;
-  margin-bottom: var(--spacing-3xl);
-  padding: var(--spacing-2xl);
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+  margin-bottom: var(--spacing-32);
+  padding: var(--spacing-24);
+  background: linear-gradient(135deg, var(--color-neutral-800) 0%, var(--color-neutral-900) 100%);
   border-radius: var(--radius-xl);
-  box-shadow: 0 0 20px rgba(0, 191, 255, 0.2);
+  box-shadow: var(--shadow-electric);
   border: 1px solid rgba(0, 191, 255, 0.1);
 }
 
 .admin-header h1 {
-  margin: 0 0 var(--spacing-sm) 0;
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  font-family: var(--font-family-primary);
+  margin: 0 0 var(--spacing-2) 0;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-100);
+  font-family: var(--font-family-heading);
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  text-shadow: 0 0 15px var(--primary-color);
+  text-shadow: 0 0 15px var(--color-primary-500);
 }
 
 .admin-subtitle {
   margin: 0;
-  font-size: 1.1rem;
-  color: var(--text-secondary);
+  font-size: var(--font-size-lg);
+  color: var(--color-neutral-300);
 }
 
 .admin-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-xl);
-  margin-bottom: var(--spacing-3xl);
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-32);
 }
 
 .stat-card {
-  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  background: linear-gradient(135deg, var(--color-neutral-800) 0%, var(--color-neutral-700) 100%);
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: var(--spacing-6);
   border: 1px solid rgba(0, 191, 255, 0.2);
   box-shadow: var(--shadow-lg);
   display: flex;
@@ -60,53 +64,55 @@
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
 }
 
 .stat-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 191, 255, 0.3);
-  border-color: var(--accent-color);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-secondary-500);
 }
 
 .stat-icon {
-  font-size: 2.5rem;
-  margin-right: var(--spacing-lg);
+  font-size: var(--font-size-4xl);
+  margin-right: var(--spacing-6);
 }
 
 .stat-content h3 {
-  margin: 0 0 var(--spacing-xs) 0;
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--primary-color);
+  margin: 0 0 var(--spacing-1) 0;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-extrabold);
+  color: var(--color-primary-500);
   text-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+  font-family: var(--font-family-heading);
 }
 
 .stat-content p {
   margin: 0;
-  font-size: 1rem;
-  color: var(--text-secondary);
-  font-weight: 600;
+  font-size: var(--font-size-base);
+  color: var(--color-neutral-300);
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-family: var(--font-family-accent);
 }
 
 .stat-link {
-  color: var(--accent-color);
+  color: var(--color-secondary-500);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid var(--accent-color);
-  border-radius: var(--radius-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-1) var(--spacing-2);
+  border: 1px solid var(--color-secondary-500);
+  border-radius: var(--radius-lg);
   transition: all var(--transition-fast);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .stat-link:hover {
-  background: var(--accent-color);
-  color: var(--bg-primary);
+  background: var(--color-secondary-500);
+  color: var(--color-neutral-900);
   transform: translateY(-1px);
 }
 

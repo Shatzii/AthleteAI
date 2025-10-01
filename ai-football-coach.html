@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Football Coach</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #8fb6e5;
+            --accent: #ff6b35;
+            --light: #f5f7fa;
+            --dark: #1a2b4c;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        header {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            background: var(--primary);
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--dark);
+            margin-bottom: 15px;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: linear-gradient(45deg, #1a2b4c 0%, #2c5aa0 100%);
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-record {
+            background: var(--danger);
+        }
+
+        .btn-stop {
+            background: var(--warning);
+        }
+
+        .btn-example {
+            background: var(--success);
+        }
+
+        .transcript {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+
+        .user {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .ai {
+            color: var(--accent);
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--warning);
+        }
+
+        .status.recording .status-indicator {
+            background: var(--danger);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        .examples {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .example-btn {
+            background: var(--secondary);
+            color: var(--dark);
+            font-size: 0.9rem;
+            padding: 8px 12px;
+        }
+
+        .example-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="range"] {
+            flex: 1;
+        }
+
+        .playlist {
+            margin-top: 15px;
+        }
+
+        .playlist-item {
+            padding: 10px;
+            border-radius: 5px;
+            background: var(--light);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .playlist-item:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .playlist-item i {
+            color: var(--accent);
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .connection-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+
+        .tips {
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--light);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .tips ul {
+            padding-left: 20px;
+            margin-top: 5px;
+        }
+
+        .tips li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-football-ball fa-2x"></i>
+                <h1>AI Football Coach</h1>
+            </div>
+            <div class="connection-status">
+                <div class="connection-dot"></div>
+                <span>Connected to ElevenLabs</span>
+            </div>
+        </header>
+
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fas fa-video"></i>
+                Video Demonstration
+            </h2>
+            <div class="video-container">
+                <div class="video-placeholder">
+                    <i class="fas fa-football-ball fa-4x"></i>
+                    <p>Video will appear here when requested</p>
+                </div>
+            </div>
+            <div class="playlist">
+                <div class="playlist-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Cover 2 Defense Explanation</span>
+                </div>
+                <div class="playlist-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>West Coast Offense Basics</span>
+                </div>
+                <div class="playlist-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Quarterback Footwork Drills</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">
+                <i class="fas fa-microphone-alt"></i>
+                Voice Interaction
+            </h2>
+            <div class="status">
+                <div class="status-indicator"></div>
+                <span>Ready to listen</span>
+            </div>
+            <div class="transcript">
+                <p class="ai">AI: Hello! I'm your AI Football Coach. Ask me anything about football strategies or techniques.</p>
+            </div>
+            <div class="controls">
+                <button class="btn-record">
+                    <i class="fas fa-microphone"></i>
+                    Start Recording
+                </button>
+                <button class="btn-stop" disabled>
+                    <i class="fas fa-stop"></i>
+                    Stop
+                </button>
+                <button class="btn-example">
+                    <i class="fas fa-bullhorn"></i>
+                    Speak
+                </button>
+            </div>
+            <div class="volume-control">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" min="0" max="100" value="80">
+                <i class="fas fa-volume-up"></i>
+            </div>
+
+            <h3 class="card-title" style="font-size: 1.2rem; margin-top: 20px;">
+                <i class="fas fa-lightbulb"></i>
+                Try Asking About:
+            </h3>
+            <div class="examples">
+                <button class="example-btn">What's a Cover 2 defense?</button>
+                <button class="example-btn">Show me quarterback drills</button>
+                <button class="example-btn">Explain the West Coast offense</button>
+                <button class="example-btn">How to read a defense?</button>
+            </div>
+
+            <div class="tips">
+                <p><strong>Pro Tip:</strong> Use specific football terms for better results:</p>
+                <ul>
+                    <li>"Show me [technique] drills"</li>
+                    <li>"Explain [defense/offense] strategy"</li>
+                    <li>"What is [football term]?"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const recordBtn = document.querySelector('.btn-record');
+            const stopBtn = document.querySelector('.btn-stop');
+            const speakBtn = document.querySelector('.btn-example');
+            const statusIndicator = document.querySelector('.status-indicator');
+            const statusText = document.querySelector('.status span');
+            const transcript = document.querySelector('.transcript');
+            const exampleBtns = document.querySelectorAll('.example-btn');
+            const playlistItems = document.querySelectorAll('.playlist-item');
+
+            // State variables
+            let isRecording = false;
+            let audioVolume = 0.8;
+
+            // Simulated webhook integration
+            const footballVideos = {
+                "cover2": {
+                    title: "Cover 2 Defense Explained",
+                    url: "https://example.com/videos/cover2.mp4",
+                    description: "Learn how the Cover 2 defense works with two deep safeties splitting the field into halves."
+                },
+                "westcoast": {
+                    title: "West Coast Offense Basics",
+                    url: "https://example.com/videos/westcoast.mp4",
+                    description: "The West Coast offense emphasizes short, horizontal passing routes to stretch defenses horizontally."
+                },
+                "qbdrills": {
+                    title: "Quarterback Footwork Drills",
+                    url: "https://example.com/videos/qbdrills.mp4",
+                    description: "Improve your quarterback skills with these essential footwork drills for better pocket presence."
+                }
+            };
+
+            // Event Listeners
+            recordBtn.addEventListener('click', startRecording);
+            stopBtn.addEventListener('click', stopRecording);
+            speakBtn.addEventListener('click', speakResponse);
+
+            // Example question buttons
+            exampleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.textContent;
+                    simulateQuestion(question);
+                });
+            });
+
+            // Playlist items
+            playlistItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const title = this.querySelector('span').textContent;
+                    loadVideo(title);
+                });
+            });
+
+            // Volume control
+            const volumeSlider = document.querySelector('input[type="range"]');
+            volumeSlider.addEventListener('input', function() {
+                audioVolume = this.value / 100;
+                document.querySelector('.fa-volume-down').nextElementSibling.value = this.value;
+            });
+
+            // Functions
+            function startRecording() {
+                if (!isRecording) {
+                    isRecording = true;
+                    recordBtn.disabled = true;
+                    stopBtn.disabled = false;
+
+                    // Update UI
+                    recordBtn.classList.add('btn-stop');
+                    statusText.textContent = "Listening...";
+                    document.querySelector('.status').classList.add('recording');
+
+                    // Simulate recording process
+                    simulateVoiceInput();
+                }
+            }
+
+            function stopRecording() {
+                if (isRecording) {
+                    isRecording = false;
+                    recordBtn.disabled = false;
+                    stopBtn.disabled = true;
+
+                    // Update UI
+                    recordBtn.classList.remove('btn-stop');
+                    statusText.textContent = "Processing...";
+
+                    // Simulate processing delay
+                    setTimeout(() => {
+                        statusText.textContent = "Ready to listen";
+                        document.querySelector('.status').classList.remove('recording');
+                    }, 1500);
+                }
+            }
+
+            function speakResponse() {
+                // Simulate AI response
+                const responses = [
+                    "The Cover 2 defense is a zone defense with two deep safeties, each responsible for half of the deep zone.",
+                    "Quarterback footwork is essential for accuracy and timing in the passing game.",
+                    "The West Coast offense uses short, quick passes to control the ball and methodically move down the field."
+                ];
+
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                addToTranscript('AI', randomResponse);
+
+                // If the response mentions a specific term, load corresponding video
+                if (randomResponse.toLowerCase().includes('cover 2')) {
+                    loadVideo('Cover 2 Defense Explanation');
+                } else if (randomResponse.toLowerCase().includes('quarterback') ||
+                          randomResponse.toLowerCase().includes('footwork')) {
+                    loadVideo('Quarterback Footwork Drills');
+                } else if (randomResponse.toLowerCase().includes('west coast')) {
+                    loadVideo('West Coast Offense Basics');
+                }
+            }
+
+            function simulateQuestion(question) {
+                addToTranscript('User', question);
+
+                // Simulate AI processing
+                setTimeout(() => {
+                    if (question.toLowerCase().includes('cover 2')) {
+                        addToTranscript('AI', "The Cover 2 defense is a zone defense where two safeties split the field into deep halves. Let me show you a video demonstration.");
+                        loadVideo('Cover 2 Defense Explanation');
+                    } else if (question.toLowerCase().includes('drills')) {
+                        addToTranscript('AI', "Here are some effective quarterback drills for improving footwork and throwing mechanics.");
+                        loadVideo('Quarterback Footwork Drills');
+                    } else if (question.toLowerCase().includes('west coast')) {
+                        addToTranscript('AI', "The West Coast offense emphasizes short, precise passing routes to methodically advance down the field.");
+                        loadVideo('West Coast Offense Basics');
+                    } else if (question.toLowerCase().includes('read a defense')) {
+                        addToTranscript('AI', "Reading a defense starts with identifying the defensive formation and key players. Let me show you some examples.");
+                        loadVideo('Cover 2 Defense Explanation');
+                    } else {
+                        addToTranscript('AI', "I can help with that football concept. Let me retrieve some information for you.");
+                    }
+                }, 1000);
+            }
+
+            function simulateVoiceInput() {
+                // Simulate speech recognition
+                const questions = [
+                    "What's a Cover 2 defense?",
+                    "Show me quarterback drills",
+                    "Explain the West Coast offense",
+                    "How do I read a defense?"
+                ];
+
+                // After a delay, simulate a question being asked
+                setTimeout(() => {
+                    const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+                    addToTranscript('User', randomQuestion);
+
+                    // Stop recording after question is "detected"
+                    stopRecording();
+
+                    // Simulate AI response after a brief delay
+                    setTimeout(() => {
+                        simulateQuestion(randomQuestion);
+                    }, 1500);
+                }, 3000);
+            }
+
+            function addToTranscript(speaker, text) {
+                const messageElement = document.createElement('p');
+                messageElement.classList.add(speaker.toLowerCase());
+                messageElement.innerHTML = `<strong>${speaker}:</strong> ${text}`;
+                transcript.appendChild(messageElement);
+                transcript.scrollTop = transcript.scrollHeight;
+            }
+
+            function loadVideo(title) {
+                const videoPlaceholder = document.querySelector('.video-placeholder');
+
+                // Update video placeholder to show loading state
+                videoPlaceholder.innerHTML = `
+                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                    <p>Loading: ${title}</p>
+                `;
+
+                // Simulate video loading
+                setTimeout(() => {
+                    videoPlaceholder.innerHTML = `
+                        <i class="fas fa-play-circle fa-3x"></i>
+                        <p>Now Playing: ${title}</p>
+                        <p style="font-size: 0.8rem; margin-top: 10px;">${getVideoDescription(title)}</p>
+                    `;
+                }, 1500);
+            }
+
+            function getVideoDescription(title) {
+                if (title.includes('Cover 2')) {
+                    return footballVideos.cover2.description;
+                } else if (title.includes('West Coast')) {
+                    return footballVideos.westcoast.description;
+                } else if (title.includes('Quarterback')) {
+                    return footballVideos.qbdrills.description;
+                }
+                return "Football strategy demonstration";
+            }
+
+            // Initialize with a sample question
+            setTimeout(() => {
+                simulateQuestion("What's a Cover 2 defense?");
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

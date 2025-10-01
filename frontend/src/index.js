@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Header from './components/Header';
-import './output.css';
+// import './output.css'; // Removed conflicting Tailwind output
+import './styles.css'; // Use our custom state-of-the-art styles
 import performanceMonitor from './utils/performanceMonitor';
 
 // Lazy load components for better performance

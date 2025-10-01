@@ -19,7 +19,7 @@ import AIDashboard from './components/AIDashboard';
 import RealTimeAnalytics from './components/RealTimeAnalytics';
 import TeamPlatform from './components/TeamPlatform';
 import TrainingPrograms from './components/TrainingPrograms';
-import './styles.css';
+// import './styles.css'; // Moved to index.js to avoid conflicts
 
 const App = () => {
     return (

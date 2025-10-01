@@ -32,10 +32,13 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-                <div className="loading-spinner">
-                    <div className="spinner"></div>
-                    <p className="text-text-secondary font-rajdhani">Loading your performance data...</p>
+            <div className="min-h-screen flex items-center justify-center particle-container">
+                <div className="glass card max-w-md w-full text-center animate-fade-in">
+                    <div className="p-8">
+                        <div className="spinner animate-rotate mb-4"></div>
+                        <h2 className="text-2xl font-bold text-white mb-4 animate-pulse">Loading Performance Data</h2>
+                        <p className="text-neutral-300">Analyzing your athletic metrics...</p>
+                    </div>
                 </div>
             </div>
         );
@@ -43,17 +46,12 @@ const Dashboard = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-dark-bg flex items-center justify-center p-4">
-                <div className="athlete-card max-w-md w-full text-center">
-                    <div className="p-6">
-                        <h2 className="text-xl font-orbitron text-red-400 mb-4">Error Loading Data</h2>
-                        <p className="text-text-secondary mb-4">{error}</p>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="btn-electric"
-                        >
-                            Try Again
-                        </button>
+            <div className="min-h-screen flex items-center justify-center particle-container p-4">
+                <div className="cyber card max-w-md w-full text-center animate-hologram">
+                    <div className="p-8">
+                        <h2 className="text-2xl font-bold text-white mb-4">Data Error</h2>
+                        <p className="text-neutral-300 mb-6">{error}</p>
+                        <button className="btn-neu">Retry</button>
                     </div>
                 </div>
             </div>
@@ -61,129 +59,86 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-dark-bg p-4">
-            <div className="max-w-6xl mx-auto">
+        <div className="min-h-screen particle-container p-8">
+            <div className="fluid-container">
                 {/* Header */}
-                <div className="text-center mb-8">
-                    <h1 className="text-4xl font-orbitron text-electric-blue mb-2 glow-text-electric">
-                        GO4IT SPORTS PLATFORM
+                <div className="text-center mb-12 animate-fade-in">
+                    <h1 className="text-5xl font-bold text-white mb-4 animate-glow">
+                        AthleteAI Dashboard
                     </h1>
-                    <p className="text-text-secondary font-rajdhani text-lg">
-                        Your AI-Powered Athletic Performance Hub
+                    <p className="text-neutral-300 text-xl max-w-2xl mx-auto">
+                        Your comprehensive sports performance analytics platform
                     </p>
                 </div>
 
                 {/* Hero Stats Section */}
-                <div className="grid md:grid-cols-2 gap-6 mb-8">
+                <div className="fluid-grid mb-12">
                     {/* Platform Stats */}
-                    <div className="athlete-card">
-                        <div className="athlete-card-header">
-                            <h2 className="text-2xl font-orbitron text-electric-blue mb-4 glow-text-electric">
+                    <div className="glass card animate-slide-in-left">
+                        <div className="p-8">
+                            <h2 className="text-2xl font-bold text-white mb-6 text-gradient">
                                 Platform Statistics
                             </h2>
-                        </div>
-                        <div className="px-6 pb-6">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="stat-card">
-                                    <div className="metric-value text-3xl">5,000+</div>
-                                    <div className="metric-label">Athletes</div>
+                            <div className="grid grid-cols-2 gap-6">
+                                <div className="text-center">
+                                    <div className="text-4xl font-bold text-electric-400 mb-2 animate-pulse">5,000+</div>
+                                    <div className="text-neutral-400">Athletes</div>
                                 </div>
-                                <div className="stat-card">
-                                    <div className="metric-value text-3xl">22</div>
-                                    <div className="metric-label">Sports</div>
+                                <div className="text-center">
+                                    <div className="text-4xl font-bold text-cyber-500 mb-2 animate-pulse">22</div>
+                                    <div className="text-neutral-400">Sports</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     {/* User Profile Card */}
-                    <div className="athlete-card">
-                        <div className="athlete-card-header">
-                            <div className="absolute top-4 right-4 w-8 h-8 bg-electric-blue rounded-full flex items-center justify-center shadow-electric">
-                                <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"></path>
-                                </svg>
+                    <div className="neu card animate-slide-in-right">
+                        <div className="p-8 text-center">
+                            <div className="w-20 h-20 bg-gradient-electric rounded-full flex items-center justify-center mx-auto mb-4 animate-float">
+                                <span className="text-2xl font-bold text-white">JD</span>
                             </div>
-                        </div>
-                        <div className="athlete-card-body">
-                            <div className="athlete-avatar">
-                                <div className="avatar-container">
-                                    <div className="avatar-inner">
-                                        <span className="text-2xl font-orbitron text-electric-blue">JD</span>
-                                    </div>
-                                </div>
+                            <h3 className="text-xl font-bold text-white mb-2">John Doe</h3>
+                            <p className="text-neutral-400 mb-4">Basketball • Point Guard</p>
+                            <div className="inline-block px-4 py-2 bg-electric-500 text-white rounded-full text-sm font-semibold animate-glow">
+                                Elite Score: 87
                             </div>
-                            <h3 className="athlete-name text-xl">John Doe</h3>
-                            <p className="text-text-secondary font-rajdhani mb-2">Basketball • Point Guard</p>
-                            <div className="badge-electric">Elite Score: 87</div>
                         </div>
                     </div>
                 </div>
 
-                {/* AI Coach Section */}
-                <div className="athlete-card mb-8">
-                    <div className="athlete-card-header">
-                        <h3 className="text-2xl font-orbitron text-neon-aqua mb-2 glow-text-aqua">
-                            AI Football Coach
-                        </h3>
-                        <p className="text-text-secondary font-rajdhani">
-                            Get personalized football training and strategy insights with our advanced AI coach.
-                        </p>
-                    </div>
-                    <div className="px-6 pb-6">
-                        <Link to="/ai-football-coach" className="btn-aqua inline-flex items-center space-x-2">
-                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd"></path>
-                            </svg>
-                            <span>Start AI Coaching Session</span>
-                        </Link>
-                    </div>
-                </div>
-
-                {/* Performance Dashboard */}
-                <div className="athlete-card">
-                    <div className="athlete-card-header">
-                        <h2 className="text-2xl font-orbitron text-electric-blue mb-4 glow-text-electric">
-                            Performance Dashboard
-                        </h2>
-                    </div>
-                    <div className="px-6 pb-6">
-                        {performanceData.length > 0 ? (
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {performanceData.map((metric, index) => (
-                                    <div key={metric.id || index} className="glass-panel">
-                                        <h3 className="text-lg font-orbitron text-electric-blue mb-2">
-                                            {metric.title}
-                                        </h3>
-                                        <div className="metric-value text-2xl mb-2">
-                                            {metric.value}
-                                        </div>
-                                        {metric.change && (
-                                            <div className={`text-sm font-rajdhani px-2 py-1 rounded-full inline-block ${
-                                                metric.trend === 'positive'
-                                                    ? 'bg-green-500/20 text-green-400'
-                                                    : metric.trend === 'negative'
-                                                    ? 'bg-red-500/20 text-red-400'
-                                                    : 'bg-gray-500/20 text-gray-400'
-                                            }`}>
-                                                {metric.change}
+                {/* Performance Data */}
+                {performanceData.length > 0 ? (
+                    <div className="glass card animate-fade-in">
+                        <div className="p-8">
+                            <h2 className="text-3xl font-bold text-white mb-6">Your Performance Data</h2>
+                            <div className="space-y-4">
+                                {performanceData.map((item, index) => (
+                                    <div key={index} className="neu p-4 rounded-lg animate-slide-in-up" style={{animationDelay: `${index * 0.1}s`}}>
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <h3 className="text-white font-semibold">{item.sport || 'Sport'}</h3>
+                                                <p className="text-neutral-400 text-sm">{item.date || 'Recent'}</p>
                                             </div>
-                                        )}
+                                            <div className="text-right">
+                                                <div className="text-2xl font-bold text-electric-400">{item.score || 'N/A'}</div>
+                                                <div className="text-neutral-500 text-sm">Performance</div>
+                                            </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
-                        ) : (
-                            <div className="text-center py-8">
-                                <p className="text-text-secondary font-rajdhani mb-4">
-                                    No performance data available yet.
-                                </p>
-                                <p className="text-text-muted font-rajdhani text-sm">
-                                    Start training to see your metrics here!
-                                </p>
-                            </div>
-                        )}
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="cyber card animate-hologram text-center">
+                        <div className="p-12">
+                            <h2 className="text-2xl font-bold text-white mb-4">No Performance Data Yet</h2>
+                            <p className="text-neutral-400 mb-6">Start tracking your athletic performance to see insights here.</p>
+                            <button className="btn">Get Started</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

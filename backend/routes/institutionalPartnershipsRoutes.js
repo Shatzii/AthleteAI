@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const institutionalPartnershipsService = require('../services/institutionalPartnershipsService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
 
 // Validation middleware
@@ -58,7 +58,7 @@ const authenticateInstitution = async (req, res, next) => {
  * @access Private (Admin only)
  */
 router.post('/', [
-  auth,
+  verifyToken,
   body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Institution name must be 2-100 characters'),
   body('type').isIn(['university', 'high_school', 'club', 'professional', 'other']).withMessage('Invalid institution type'),
   body('domain').optional().isFQDN().withMessage('Invalid domain format'),
@@ -109,7 +109,7 @@ router.post('/', [
  * @desc Get all institutions (admin) or user's institution
  * @access Private
  */
-router.get('/', auth, async (req, res) => {
+router.get('/', verifyToken, async (req, res) => {
   try {
     // If admin, return all institutions
     if (req.user.role === 'admin') {
@@ -150,7 +150,7 @@ router.get('/', auth, async (req, res) => {
  * @access Private
  */
 router.get('/:institutionId', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   validateRequest
 ], async (req, res) => {
@@ -195,7 +195,7 @@ router.get('/:institutionId', [
  * @access Private (Admin or Institution Admin)
  */
 router.put('/:institutionId', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   body('name').optional().trim().isLength({ min: 2, max: 100 }).withMessage('Institution name must be 2-100 characters'),
   body('contactInfo').optional().isObject().withMessage('Contact info must be an object'),
@@ -241,7 +241,7 @@ router.put('/:institutionId', [
  * @access Private (Institution Admin)
  */
 router.post('/:institutionId/white-label', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   body('primaryColor').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Invalid color format'),
   body('secondaryColor').optional().matches(/^#[0-9A-F]{6}$/i).withMessage('Invalid color format'),
@@ -289,7 +289,7 @@ router.post('/:institutionId/white-label', [
  * @access Private (Institution Admin)
  */
 router.post('/:institutionId/teams', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   body('name').trim().isLength({ min: 1, max: 100 }).withMessage('Team name is required'),
   body('sport').optional().isString().withMessage('Sport must be a string'),
@@ -335,7 +335,7 @@ router.post('/:institutionId/teams', [
  * @access Private (Institution Admin)
  */
 router.post('/:institutionId/athletes/bulk', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   body('athletes').isArray({ min: 1, max: 1000 }).withMessage('Athletes array must contain 1-1000 items'),
   body('athletes.*.name').trim().isLength({ min: 1 }).withMessage('Athlete name is required'),
@@ -380,7 +380,7 @@ router.post('/:institutionId/athletes/bulk', [
  * @access Private (Institution Admin)
  */
 router.post('/:institutionId/integrations', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   body('name').trim().isLength({ min: 1, max: 100 }).withMessage('Integration name is required'),
   body('type').isIn(['api', 'webhook', 'sso', 'lms', 'other']).withMessage('Invalid integration type'),
@@ -425,7 +425,7 @@ router.post('/:institutionId/integrations', [
  * @access Private (Institution Admin)
  */
 router.get('/:institutionId/analytics', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   query('dateRange').optional().isIn(['last_7_days', 'last_30_days', 'last_90_days', 'current_season']).withMessage('Invalid date range'),
   validateRequest
@@ -506,7 +506,7 @@ router.post('/webhook/:institutionId', [
  * @access Private (Institution Admin)
  */
 router.get('/:institutionId/api-keys', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   validateRequest
 ], async (req, res) => {
@@ -545,7 +545,7 @@ router.get('/:institutionId/api-keys', [
  * @access Private (Institution Admin)
  */
 router.post('/:institutionId/api-keys/regenerate', [
-  auth,
+  verifyToken,
   param('institutionId').isMongoId().withMessage('Invalid institution ID'),
   validateRequest
 ], async (req, res) => {

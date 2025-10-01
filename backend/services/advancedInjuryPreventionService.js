@@ -2,18 +2,18 @@
 // Enhanced injury risk assessment with computer vision and rehabilitation planning
 
 const mongoose = require('mongoose');
-const { GoogleAI } = require('@google/generative-ai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const sharp = require('sharp');
 const path = require('path');
 const fs = require('fs').promises;
 
 // Models
-const InjuryRisk = require('../models/InjuryRisk');
-const Athlete = require('../models/Athlete');
-const TrainingSession = require('../models/TrainingSession');
+const InjuryRisk = require('../models/injuryModel');
+const Athlete = require('../models/playerModel');
+const TrainingSession = require('../models/trainingSessionModel');
 
 // Initialize Google AI
-const genAI = new GoogleAI(process.env.GOOGLE_AI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
 
 class AdvancedInjuryPreventionService {
   constructor() {

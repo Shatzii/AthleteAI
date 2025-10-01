@@ -85,7 +85,7 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--secondary-color));
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500), var(--color-primary-600));
 }
 
 .form-section {
@@ -114,8 +114,8 @@
   content: '';
   width: 4px;
   height: 24px;
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
+  border-radius: var(--border-radius-sm);
 }
 
 .form-row {
@@ -285,8 +285,8 @@
   transform: translateX(-50%);
   width: 100px;
   height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-  border-radius: var(--radius-2xl);
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
+  border-radius: var(--border-radius-2xl);
 }
 
 .overall-result {
@@ -314,7 +314,7 @@
   left: 0;
   width: 100%;
   height: 6px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(90deg, var(--color-primary-500), var(--color-secondary-500));
 }
 
 .result-card h3 {
@@ -423,7 +423,7 @@
 .progress-metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-lg);
+  gap: var(--spacing-4);
   position: relative;
   z-index: 1;
 }
@@ -431,10 +431,10 @@
 .progress-item {
   display: flex;
   align-items: center;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-4);
   background: rgba(255, 255, 255, 0.1);
-  padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
+  padding: var(--spacing-3);
+  border-radius: var(--border-radius-lg);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -442,22 +442,22 @@
 .progress-label {
   min-width: 140px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-size-sm);
 }
 
 .progress-bar {
   flex: 1;
   height: 10px;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--border-radius-2xl);
   overflow: hidden;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--success-color), var(--accent-color));
-  border-radius: var(--radius-2xl);
+  background: linear-gradient(90deg, var(--color-success-500), var(--color-secondary-500));
+  border-radius: var(--border-radius-2xl);
   transition: width var(--transition-slow);
   position: relative;
 }
@@ -482,27 +482,27 @@
   min-width: 50px;
   text-align: right;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: var(--font-size-base);
 }
 
 .recommendations,
 .next-steps {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(251, 191, 36, 0.05));
   border: 2px solid rgba(245, 158, 11, 0.2);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-xl);
-  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-6);
+  border-radius: var(--border-radius-xl);
+  margin-bottom: var(--spacing-6);
 }
 
 .recommendations h3,
 .next-steps h3 {
-  color: var(--warning-color);
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  color: var(--color-warning-500);
+  margin: 0 0 var(--spacing-3) 0;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-2);
 }
 
 .recommendations h3::before {
@@ -516,84 +516,84 @@
 .recommendations ul,
 .next-steps ul {
   margin: 0;
-  padding-left: var(--spacing-lg);
+  padding-left: var(--spacing-4);
 }
 
 .recommendations li,
 .next-steps li {
-  margin-bottom: var(--spacing-sm);
-  color: var(--gray-700);
-  font-size: 1rem;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-neutral-700);
+  font-size: var(--font-size-base);
   position: relative;
 }
 
 .recommendations li::marker,
 .next-steps li::marker {
-  color: var(--warning-color);
+  color: var(--color-warning-500);
 }
 
 .timeline {
   background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(14, 165, 233, 0.05));
   border: 2px solid rgba(6, 182, 212, 0.2);
-  padding: var(--spacing-xl);
-  border-radius: var(--radius-xl);
+  padding: var(--spacing-6);
+  border-radius: var(--border-radius-xl);
 }
 
 .timeline h3 {
-  color: var(--accent-color);
-  margin: 0 0 var(--spacing-lg) 0;
+  color: var(--color-secondary-500);
+  margin: 0 0 var(--spacing-4) 0;
   text-align: center;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
 }
 
 .timeline-sections {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: var(--spacing-lg);
+  gap: var(--spacing-4);
 }
 
 .timeline-section {
-  background: white;
-  padding: var(--spacing-lg);
-  border-radius: var(--radius-lg);
+  background: var(--color-neutral-100);
+  padding: var(--spacing-4);
+  border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--color-neutral-200);
 }
 
 .timeline-section h4 {
-  color: var(--primary-color);
-  margin: 0 0 var(--spacing-md) 0;
-  font-size: 1.125rem;
-  font-weight: 600;
+  color: var(--color-primary-500);
+  margin: 0 0 var(--spacing-3) 0;
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
 }
 
 .timeline-section ul {
   margin: 0;
-  padding-left: var(--spacing-md);
+  padding-left: var(--spacing-3);
 }
 
 .timeline-section li {
-  margin-bottom: var(--spacing-sm);
-  color: var(--gray-600);
-  font-size: 0.95rem;
+  margin-bottom: var(--spacing-2);
+  color: var(--color-neutral-600);
+  font-size: var(--font-size-sm);
   position: relative;
 }
 
 .timeline-section li::before {
   content: '•';
-  color: var(--accent-color);
+  color: var(--color-secondary-500);
   font-weight: bold;
-  margin-right: var(--spacing-sm);
+  margin-right: var(--spacing-2);
 }
 
 @media (max-width: 1024px) {
   .ncaa-tracker {
-    padding: 0 var(--spacing-md);
+    padding: 0 var(--spacing-3);
   }
 
   .ncaa-header {
-    padding: var(--spacing-2xl) var(--spacing-lg);
+    padding: var(--spacing-8) var(--spacing-4);
   }
 
   .ncaa-header h1 {
@@ -631,8 +631,8 @@
   }
 
   .ncaa-header {
-    margin-bottom: var(--spacing-2xl);
-    padding: var(--spacing-xl) var(--spacing-md);
+    margin-bottom: var(--spacing-8);
+    padding: var(--spacing-6) var(--spacing-3);
   }
 
   .ncaa-header h1 {
@@ -703,13 +703,13 @@
   }
 
   .progress-item {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-2);
   }
 
   .recommendations,
   .next-steps,
   .timeline {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-4);
   }
 
   .timeline-sections {
@@ -719,7 +719,7 @@
 
 @media (max-width: 480px) {
   .ncaa-header {
-    padding: var(--spacing-lg) var(--spacing-sm);
+    padding: var(--spacing-4) var(--spacing-2);
   }
 
   .ncaa-header h1 {
@@ -861,9 +861,9 @@
 }
 
 .guide-section h3 {
-  color: var(--accent-color);
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.5rem;
+  color: var(--color-secondary-500);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-2xl);
 }
 
 .diploma-list h4 {
@@ -900,23 +900,23 @@
 }
 
 .english-requirements h3 {
-  color: var(--accent-color);
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.5rem;
+  color: var(--color-secondary-500);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-2xl);
   text-align: center;
 }
 
 .requirements-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: var(--spacing-lg);
+  gap: var(--spacing-4);
 }
 
 .requirement-item {
   text-align: center;
-  padding: var(--spacing-md);
+  padding: var(--spacing-3);
   background: rgba(0, 191, 255, 0.1);
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-md);
   border: 1px solid rgba(0, 191, 255, 0.2);
 }
 
@@ -1012,16 +1012,16 @@
 /* Enhanced Form Styles */
 .international-section {
   background: rgba(255, 255, 255, 0.05);
-  border-radius: var(--radius-lg);
-  padding: var(--spacing-xl);
-  margin-top: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  margin-top: var(--spacing-4);
   border: 1px solid rgba(0, 191, 255, 0.1);
 }
 
 .international-section h3 {
-  color: var(--accent-color);
-  margin-bottom: var(--spacing-lg);
-  font-size: 1.5rem;
+  color: var(--color-secondary-500);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-2xl);
 }
 
 .diploma-info {
@@ -1098,13 +1098,13 @@
 
 /* Enhanced Button Styles */
 .calculate-btn {
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-secondary-500));
   border: none;
   color: white;
-  padding: var(--spacing-lg) var(--spacing-2xl);
-  border-radius: var(--radius-xl);
-  font-size: 1.2rem;
-  font-weight: 700;
+  padding: var(--spacing-4) var(--spacing-8);
+  border-radius: var(--border-radius-xl);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   transition: all var(--transition-normal);
   text-transform: uppercase;
@@ -1178,8 +1178,8 @@
   }
 
   .calculate-btn {
-    padding: var(--spacing-md) var(--spacing-lg);
-    font-size: 1rem;
+    padding: var(--spacing-3) var(--spacing-4);
+    font-size: var(--font-size-base);
   }
 
   .requirement-card {

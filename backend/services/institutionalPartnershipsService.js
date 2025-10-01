@@ -6,11 +6,11 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
 // Models
-const Institution = require('../models/Institution');
-const User = require('../models/User');
-const Athlete = require('../models/Athlete');
-const Team = require('../models/Team');
-const Subscription = require('../models/Subscription');
+// const Institution = require('../models/Institution');
+const User = require('../models/userModel');
+// const Athlete = require('../models/Athlete');
+// const Team = require('../models/Team');
+// const Subscription = require('../models/Subscription');
 
 class InstitutionalPartnershipsService {
   constructor() {

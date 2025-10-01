@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const ecommerceService = require('../services/ecommerceService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
 
 // Initialize service on startup
@@ -15,7 +15,7 @@ ecommerceService.initialize().catch(console.error);
  * @desc Get e-commerce statistics
  * @access Private (Admin)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
     // Only admins can access stats
     if (req.user.role !== 'admin') {
@@ -194,7 +194,7 @@ router.get('/categories', async (req, res) => {
  * @desc Create a new shopping cart
  * @access Private
  */
-router.post('/cart', auth, async (req, res) => {
+router.post('/cart', verifyToken, async (req, res) => {
   try {
     const cart = ecommerceService.createCart(req.user.id);
 
@@ -217,7 +217,7 @@ router.post('/cart', auth, async (req, res) => {
  * @desc Get cart contents
  * @access Private
  */
-router.get('/cart/:cartId', auth, [
+router.get('/cart/:cartId', verifyToken, [
   param('cartId').isString().notEmpty()
 ], async (req, res) => {
   try {
@@ -254,7 +254,7 @@ router.get('/cart/:cartId', auth, [
  * @access Private
  */
 router.post('/cart/:cartId/items', [
-  auth,
+  verifyToken,
   param('cartId').isString().notEmpty(),
   body('productId').isString().notEmpty(),
   body('quantity').isNumeric().withMessage('Quantity must be a number'),
@@ -298,7 +298,7 @@ router.post('/cart/:cartId/items', [
  * @access Private
  */
 router.put('/cart/:cartId/items', [
-  auth,
+  verifyToken,
   param('cartId').isString().notEmpty(),
   body('productId').isString().notEmpty(),
   body('quantity').isNumeric().withMessage('Quantity must be a number'),
@@ -342,7 +342,7 @@ router.put('/cart/:cartId/items', [
  * @access Private
  */
 router.delete('/cart/:cartId/items', [
-  auth,
+  verifyToken,
   param('cartId').isString().notEmpty(),
   body('productId').isString().notEmpty(),
   body('variant').optional()
@@ -385,7 +385,7 @@ router.delete('/cart/:cartId/items', [
  * @access Private
  */
 router.post('/checkout', [
-  auth,
+  verifyToken,
   body('cartId').isString().notEmpty(),
   body('customerInfo').isObject().withMessage('Customer info is required'),
   body('customerInfo.name').isString().notEmpty(),
@@ -441,7 +441,7 @@ router.post('/checkout', [
  * @desc Get customer orders
  * @access Private
  */
-router.get('/orders', auth, [
+router.get('/orders', verifyToken, [
   query('limit').optional().isNumeric(),
   query('offset').optional().isNumeric()
 ], async (req, res) => {
@@ -489,7 +489,7 @@ router.get('/orders', auth, [
  * @access Private
  */
 router.get('/orders/:orderId', [
-  auth,
+  verifyToken,
   param('orderId').isString().notEmpty()
 ], async (req, res) => {
   try {
@@ -539,7 +539,7 @@ router.get('/orders/:orderId', [
  * @desc Get product recommendations
  * @access Private
  */
-router.get('/recommendations', auth, async (req, res) => {
+router.get('/recommendations', verifyToken, async (req, res) => {
   try {
     // Mock data - in real implementation, get from user history
     const viewedProducts = [];
@@ -571,7 +571,7 @@ router.get('/recommendations', auth, async (req, res) => {
  * @access Private (Admin)
  */
 router.post('/refund/:orderId', [
-  auth,
+  verifyToken,
   param('orderId').isString().notEmpty(),
   body('amount').optional().isNumeric(),
   body('reason').optional().isString()
@@ -619,7 +619,7 @@ router.post('/refund/:orderId', [
  * @access Private (Admin)
  */
 router.put('/inventory/:productId', [
-  auth,
+  verifyToken,
   param('productId').isString().notEmpty(),
   body('quantity').isNumeric().withMessage('Quantity must be a number'),
   body('variant').optional()

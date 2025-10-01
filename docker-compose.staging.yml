@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  athleteai-backend-staging:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"  # Use different port for staging
+    environment:
+      - NODE_ENV=staging
+      - MONGO_URI=mongodb://mongo-staging:27017/athleteai_staging
+      - REDIS_URL=redis://redis-staging:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_AI_API_KEY=${GOOGLE_AI_API_KEY}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - GOOGLE_CLOUD_SPEECH_CREDENTIALS=${GOOGLE_CLOUD_SPEECH_CREDENTIALS}
+    depends_on:
+      - mongo-staging
+      - redis-staging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  athleteai-frontend-staging:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"  # Use different port for staging
+    environment:
+      - REACT_APP_API_URL=http://localhost:5001
+      - NODE_ENV=staging
+    depends_on:
+      - athleteai-backend-staging
+    restart: unless-stopped
+
+  mongo-staging:
+    image: mongo:6.0
+    ports:
+      - "27018:27017"  # Different port for staging
+    volumes:
+      - mongo_staging_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=athleteai_staging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis-staging:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"  # Different port for staging
+    volumes:
+      - redis_staging_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nginx-staging:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx-staging.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - athleteai-frontend-staging
+      - athleteai-backend-staging
+    restart: unless-stopped
+
+volumes:
+  mongo_staging_data:
+  redis_staging_data:

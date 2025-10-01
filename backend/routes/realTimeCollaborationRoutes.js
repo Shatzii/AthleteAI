@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const realTimeCollaborationService = require('../services/realTimeCollaborationService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
 
 /**
@@ -13,7 +13,7 @@ const { body, param, query, validationResult } = require('express-validator');
  * @access Private
  */
 router.post('/sessions', [
-  auth,
+  verifyToken,
   body('title').optional().isString().withMessage('Title must be a string'),
   body('description').optional().isString().withMessage('Description must be a string'),
   body('scheduledFor').optional().isISO8601().withMessage('Invalid date format'),
@@ -68,7 +68,7 @@ router.post('/sessions', [
  * @access Private
  */
 router.get('/sessions/:sessionId', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required')
 ], async (req, res) => {
   try {
@@ -111,7 +111,7 @@ router.get('/sessions/:sessionId', [
  * @access Private
  */
 router.put('/sessions/:sessionId', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required'),
   body('title').optional().isString().withMessage('Title must be a string'),
   body('description').optional().isString().withMessage('Description must be a string'),
@@ -182,7 +182,7 @@ router.put('/sessions/:sessionId', [
  * @access Private
  */
 router.delete('/sessions/:sessionId', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required')
 ], async (req, res) => {
   try {
@@ -240,7 +240,7 @@ router.delete('/sessions/:sessionId', [
  * @access Private
  */
 router.get('/recordings/:recordingId', [
-  auth,
+  verifyToken,
   param('recordingId').isString().notEmpty().withMessage('Recording ID is required')
 ], async (req, res) => {
   try {
@@ -291,7 +291,7 @@ router.get('/recordings/:recordingId', [
  * @desc Get collaboration service statistics
  * @access Private (Admin)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
     // Only admins can access stats
     if (req.user.role !== 'admin') {
@@ -321,7 +321,7 @@ router.get('/stats', auth, async (req, res) => {
  * @desc Trigger cleanup of old sessions and recordings
  * @access Private (Admin)
  */
-router.post('/cleanup', auth, async (req, res) => {
+router.post('/cleanup', verifyToken, async (req, res) => {
   try {
     // Only admins can trigger cleanup
     if (req.user.role !== 'admin') {
@@ -353,7 +353,7 @@ router.post('/cleanup', auth, async (req, res) => {
  * @access Private
  */
 router.post('/sessions/:sessionId/message', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required'),
   body('message').isString().notEmpty().withMessage('Message is required'),
   body('type').optional().isIn(['text', 'system', 'emoji']).withMessage('Invalid message type')
@@ -410,7 +410,7 @@ router.post('/sessions/:sessionId/message', [
  * @access Private
  */
 router.get('/sessions/:sessionId/participants', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required')
 ], async (req, res) => {
   try {
@@ -468,7 +468,7 @@ router.get('/sessions/:sessionId/participants', [
  * @access Private
  */
 router.post('/sessions/:sessionId/kick', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required'),
   body('userId').isString().notEmpty().withMessage('User ID is required')
 ], async (req, res) => {

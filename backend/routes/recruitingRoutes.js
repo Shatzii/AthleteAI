@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 
 // Sample recruiting data - in production, this would come from a database
 const SAMPLE_MATCHES = [
@@ -100,7 +100,7 @@ const SAMPLE_CONVERSATIONS = [
 ];
 
 // Get AI-powered matches for a user
-router.get('/matches', auth.verifyToken, async (req, res) => {
+router.get('/matches', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || req.user?.id || 'demo-user';
     const sport = req.query.sport;
@@ -151,7 +151,7 @@ router.get('/matches', auth.verifyToken, async (req, res) => {
 });
 
 // Get user conversations
-router.get('/conversations', auth.verifyToken, async (req, res) => {
+router.get('/conversations', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || req.user?.id || 'demo-user';
 
@@ -172,7 +172,7 @@ router.get('/conversations', auth.verifyToken, async (req, res) => {
 });
 
 // Send message to coach
-router.post('/message', auth.verifyToken, async (req, res) => {
+router.post('/message', verifyToken, async (req, res) => {
   try {
     const { coachId, message, conversationId } = req.body;
     const userId = req.user?.id || 'demo-user';
@@ -203,7 +203,7 @@ router.post('/message', auth.verifyToken, async (req, res) => {
 });
 
 // Get recruiting analytics
-router.get('/analytics', auth.verifyToken, async (req, res) => {
+router.get('/analytics', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || req.user?.id || 'demo-user';
 
@@ -245,7 +245,7 @@ router.get('/analytics', auth.verifyToken, async (req, res) => {
 });
 
 // Update match preferences
-router.put('/preferences', auth.verifyToken, async (req, res) => {
+router.put('/preferences', verifyToken, async (req, res) => {
   try {
     const { sport, division, location, academicFocus, budget } = req.body;
     const userId = req.user?.id || 'demo-user';
@@ -274,7 +274,7 @@ router.put('/preferences', auth.verifyToken, async (req, res) => {
 });
 
 // Get coach profiles
-router.get('/coaches', auth.verifyToken, async (req, res) => {
+router.get('/coaches', verifyToken, async (req, res) => {
   try {
     const sport = req.query.sport;
     const school = req.query.school;
@@ -340,7 +340,7 @@ router.get('/coaches', auth.verifyToken, async (req, res) => {
 });
 
 // Schedule virtual visit
-router.post('/visit', auth.verifyToken, async (req, res) => {
+router.post('/visit', verifyToken, async (req, res) => {
   try {
     const { coachId, date, time, visitType } = req.body;
     const userId = req.user?.id || 'demo-user';
@@ -377,7 +377,7 @@ router.post('/visit', auth.verifyToken, async (req, res) => {
 });
 
 // Get recruiting timeline
-router.get('/timeline', auth.verifyToken, async (req, res) => {
+router.get('/timeline', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || req.user?.id || 'demo-user';
 

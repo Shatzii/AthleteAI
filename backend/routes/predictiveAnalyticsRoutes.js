@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const predictiveAnalyticsService = require('../services/predictiveAnalyticsService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
 
 // Initialize service on startup
@@ -15,7 +15,7 @@ predictiveAnalyticsService.initialize().catch(console.error);
  * @desc Get predictive analytics service statistics
  * @access Private (Admin)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
     const stats = predictiveAnalyticsService.getStats();
 
@@ -38,7 +38,7 @@ router.get('/stats', auth, async (req, res) => {
  * @access Private
  */
 router.post('/performance-trajectory', [
-  auth,
+  verifyToken,
   body('athleteId').isString().notEmpty().withMessage('Athlete ID is required'),
   body('currentData').isObject().withMessage('Current athlete data is required'),
   body('currentData.age').isNumeric().withMessage('Age must be a number'),
@@ -93,7 +93,7 @@ router.post('/performance-trajectory', [
  * @access Private
  */
 router.post('/injury-risk', [
-  auth,
+  verifyToken,
   body('athleteId').isString().notEmpty().withMessage('Athlete ID is required'),
   body('riskFactors').isObject().withMessage('Risk factors are required'),
   body('riskFactors.workload').isNumeric().withMessage('Workload must be a number'),
@@ -147,7 +147,7 @@ router.post('/injury-risk', [
  * @access Private
  */
 router.post('/comparative-analysis', [
-  auth,
+  verifyToken,
   body('athleteId').isString().notEmpty().withMessage('Athlete ID is required'),
   body('comparisonGroup').isArray().withMessage('Comparison group must be an array'),
   body('comparisonGroup.*.id').isString().notEmpty().withMessage('Each comparison athlete must have an ID'),
@@ -197,7 +197,7 @@ router.post('/comparative-analysis', [
  * @desc Get information about available predictive models
  * @access Private (Admin/Coach)
  */
-router.get('/models', auth, async (req, res) => {
+router.get('/models', verifyToken, async (req, res) => {
   try {
     // Only admins and coaches can access model information
     if (req.user.role !== 'admin' && req.user.role !== 'coach') {
@@ -236,7 +236,7 @@ router.get('/models', auth, async (req, res) => {
  * @access Private (Admin/Coach)
  */
 router.post('/batch-predictions', [
-  auth,
+  verifyToken,
   body('predictions').isArray().withMessage('Predictions must be an array'),
   body('predictions.*.athleteId').isString().notEmpty().withMessage('Each prediction must have an athlete ID'),
   body('predictions.*.type').isIn(['performance_trajectory', 'injury_risk']).withMessage('Invalid prediction type'),
@@ -321,7 +321,7 @@ router.post('/batch-predictions', [
  * @desc Clear prediction cache
  * @access Private (Admin)
  */
-router.delete('/cache', auth, async (req, res) => {
+router.delete('/cache', verifyToken, async (req, res) => {
   try {
     // Only admins can clear cache
     if (req.user.role !== 'admin') {
@@ -353,7 +353,7 @@ router.delete('/cache', auth, async (req, res) => {
  * @access Private
  */
 router.get('/dashboard/:athleteId', [
-  auth,
+  verifyToken,
   param('athleteId').isString().notEmpty().withMessage('Athlete ID is required'),
   query('timeframe').optional().isNumeric().withMessage('Timeframe must be a number')
 ], async (req, res) => {

@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const voiceCoachService = require('../services/voiceCoachService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const multer = require('multer');
 const { body, param, query, validationResult } = require('express-validator');
 
@@ -32,7 +32,7 @@ voiceCoachService.initialize().catch(console.error);
  * @desc Get voice coach service statistics
  * @access Private (Admin)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
     const stats = voiceCoachService.getStats();
 
@@ -55,7 +55,7 @@ router.get('/stats', auth, async (req, res) => {
  * @access Private
  */
 router.post('/session/start', [
-  auth,
+  verifyToken,
   body('athleteId').optional().isString().withMessage('Athlete ID must be a string'),
   body('preferences').optional().isObject().withMessage('Preferences must be an object'),
   body('preferences.voice').optional().isString().withMessage('Voice preference must be a string'),
@@ -108,7 +108,7 @@ router.post('/session/start', [
  * @access Private
  */
 router.post('/session/:sessionId/process', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required'),
   upload.single('audio'),
   body('context').optional().isObject().withMessage('Context must be an object')
@@ -175,7 +175,7 @@ router.post('/session/:sessionId/process', [
  * @access Private
  */
 router.post('/session/:sessionId/text', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required'),
   body('text').isString().notEmpty().withMessage('Text input is required'),
   body('context').optional().isObject().withMessage('Context must be an object')
@@ -246,7 +246,7 @@ router.post('/session/:sessionId/text', [
  * @access Private
  */
 router.post('/session/:sessionId/end', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required')
 ], async (req, res) => {
   try {
@@ -299,7 +299,7 @@ router.post('/session/:sessionId/end', [
  * @access Private
  */
 router.get('/session/:sessionId/status', [
-  auth,
+  verifyToken,
   param('sessionId').isString().notEmpty().withMessage('Session ID is required')
 ], async (req, res) => {
   try {
@@ -355,7 +355,7 @@ router.get('/session/:sessionId/status', [
  * @desc Get available voice options
  * @access Private
  */
-router.get('/voices', auth, async (req, res) => {
+router.get('/voices', verifyToken, async (req, res) => {
   try {
     // This would typically fetch from ElevenLabs API
     const voices = [
@@ -423,7 +423,7 @@ router.get('/voices', auth, async (req, res) => {
  * @access Private (Admin)
  */
 router.put('/coach/personality', [
-  auth,
+  verifyToken,
   body('name').optional().isString().withMessage('Name must be a string'),
   body('style').optional().isIn(['motivational', 'technical', 'encouraging', 'strict']).withMessage('Invalid style'),
   body('tone').optional().isIn(['professional', 'casual', 'intense', 'supportive']).withMessage('Invalid tone'),
@@ -476,7 +476,7 @@ router.put('/coach/personality', [
  * @desc Clean up old audio files
  * @access Private (Admin)
  */
-router.post('/cleanup', auth, async (req, res) => {
+router.post('/cleanup', verifyToken, async (req, res) => {
   try {
     // Only admins can trigger cleanup
     if (req.user.role !== 'admin') {
@@ -510,7 +510,7 @@ router.post('/cleanup', auth, async (req, res) => {
  * @desc Test voice coach functionality
  * @access Private (Admin)
  */
-router.post('/test', auth, async (req, res) => {
+router.post('/test', verifyToken, async (req, res) => {
   try {
     // Only admins can run tests
     if (req.user.role !== 'admin') {

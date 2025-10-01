@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
-const { sanitizeInput, validateCoachQuestion } = require('../middleware/validation');
+const { sanitizeInput, validateAICoachQuestion } = require('../middleware/validation');
 const standaloneFootballCoach = require('../services/standaloneFootballCoach');
 
 // Standalone AI Football Coach endpoint
-router.post('/ask', authMiddleware.verifyToken, sanitizeInput, validateCoachQuestion, async (req, res) => {
+router.post('/ask', authMiddleware.verifyToken, sanitizeInput, validateAICoachQuestion, async (req, res) => {
   try {
     const { question, athleteId, context } = req.body;
 

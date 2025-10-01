@@ -127,16 +127,29 @@
 
 /* Specialized nav link variants */
 .nav-link.admin-link {
-  @apply btn-primary;
+  background: var(--gradient-primary);
+  color: var(--color-neutral-100);
+  border: none;
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-normal);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   font-weight: var(--font-weight-semibold);
 }
 
 .nav-link.primary-link {
-  @apply btn-primary;
-  font-size: var(--font-size-base);
+  background: var(--gradient-primary);
+  color: var(--color-neutral-100);
+  border: none;
   padding: var(--spacing-2) var(--spacing-5);
+  border-radius: var(--border-radius-md);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  transition: var(--transition-normal);
+  font-size: var(--font-size-base);
   box-shadow: var(--shadow-electric);
   text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
   border: 1px solid rgba(255, 255, 255, 0.2);

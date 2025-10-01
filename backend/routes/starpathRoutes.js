@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 
 // Sample StarPath data - in production, this would come from a database
 const SAMPLE_STARPATH_DATA = [
@@ -85,7 +85,7 @@ const SAMPLE_STARPATH_DATA = [
 ];
 
 // Get StarPath route data
-router.get('/route', auth.verifyToken, async (req, res) => {
+router.get('/route', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || 'demo-user';
 
@@ -107,7 +107,7 @@ router.get('/route', auth.verifyToken, async (req, res) => {
 });
 
 // Get user progress data
-router.get('/progress', auth.verifyToken, async (req, res) => {
+router.get('/progress', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || 'demo-user';
 
@@ -136,7 +136,7 @@ router.get('/progress', auth.verifyToken, async (req, res) => {
 });
 
 // Start training session
-router.post('/train', auth.verifyToken, async (req, res) => {
+router.post('/train', verifyToken, async (req, res) => {
   try {
     const { nodeId, activity } = req.body;
     const userId = req.user?.id || 'demo-user';
@@ -171,7 +171,7 @@ router.post('/train', auth.verifyToken, async (req, res) => {
 });
 
 // Update skill level
-router.post('/level-up', auth.verifyToken, async (req, res) => {
+router.post('/level-up', verifyToken, async (req, res) => {
   try {
     const { nodeId } = req.body;
     const userId = req.user?.id || 'demo-user';
@@ -229,7 +229,7 @@ router.post('/level-up', auth.verifyToken, async (req, res) => {
 });
 
 // Get achievements
-router.get('/achievements', auth.verifyToken, async (req, res) => {
+router.get('/achievements', verifyToken, async (req, res) => {
   try {
     const userId = req.query.userId || 'demo-user';
 
@@ -277,7 +277,7 @@ router.get('/achievements', auth.verifyToken, async (req, res) => {
 });
 
 // Get leaderboard
-router.get('/leaderboard', auth.verifyToken, async (req, res) => {
+router.get('/leaderboard', verifyToken, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 10;
 

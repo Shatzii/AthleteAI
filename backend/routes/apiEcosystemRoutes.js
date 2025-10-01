@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const apiEcosystemService = require('../services/apiEcosystemService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const { body, param, query, validationResult } = require('express-validator');
 
 // Initialize service on startup
@@ -15,7 +15,7 @@ apiEcosystemService.initialize().catch(console.error);
  * @desc Get API ecosystem statistics
  * @access Private (Admin)
  */
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', verifyToken, async (req, res) => {
   try {
     const stats = apiEcosystemService.getStats();
 
@@ -38,7 +38,7 @@ router.get('/stats', auth, async (req, res) => {
  * @access Private (Admin)
  */
 router.post('/keys/generate', [
-  auth,
+  verifyToken,
   body('name').isString().notEmpty().withMessage('Application name is required'),
   body('owner').isEmail().withMessage('Valid owner email is required'),
   body('permissions').isArray().withMessage('Permissions must be an array'),
@@ -94,7 +94,7 @@ router.post('/keys/generate', [
  * @desc List API keys (admin only)
  * @access Private (Admin)
  */
-router.get('/keys', auth, async (req, res) => {
+router.get('/keys', verifyToken, async (req, res) => {
   try {
     // Only admins can list API keys
     if (req.user.role !== 'admin') {
@@ -136,7 +136,7 @@ router.get('/keys', auth, async (req, res) => {
  * @access Private (Admin)
  */
 router.get('/keys/:keyId/stats', [
-  auth,
+  verifyToken,
   param('keyId').isString().notEmpty().withMessage('Key ID is required')
 ], async (req, res) => {
   try {
@@ -192,7 +192,7 @@ router.get('/keys/:keyId/stats', [
  * @access Private (Admin)
  */
 router.delete('/keys/:keyId', [
-  auth,
+  verifyToken,
   param('keyId').isString().notEmpty().withMessage('Key ID is required')
 ], async (req, res) => {
   try {
@@ -273,7 +273,7 @@ router.get('/docs/:version?', async (req, res) => {
  * @access Private
  */
 router.post('/webhooks/register', [
-  auth,
+  verifyToken,
   body('event').isString().notEmpty().withMessage('Event type is required'),
   body('url').isURL().withMessage('Valid webhook URL is required'),
   body('apiKey').isString().notEmpty().withMessage('API key is required')
@@ -350,7 +350,7 @@ router.get('/webhooks/events', async (req, res) => {
  * @access Private
  */
 router.post('/webhooks/test', [
-  auth,
+  verifyToken,
   body('event').isString().notEmpty().withMessage('Event type is required'),
   body('url').isURL().withMessage('Valid webhook URL is required'),
   body('apiKey').isString().notEmpty().withMessage('API key is required')
@@ -435,7 +435,7 @@ router.post('/webhooks/test', [
  * @desc Get API request logs
  * @access Private (Admin)
  */
-router.get('/logs', auth, async (req, res) => {
+router.get('/logs', verifyToken, async (req, res) => {
   try {
     // Only admins can view logs
     if (req.user.role !== 'admin') {
@@ -475,7 +475,7 @@ router.get('/logs', auth, async (req, res) => {
  * @desc Clean up old logs and inactive keys
  * @access Private (Admin)
  */
-router.post('/cleanup', auth, async (req, res) => {
+router.post('/cleanup', verifyToken, async (req, res) => {
   try {
     // Only admins can trigger cleanup
     if (req.user.role !== 'admin') {

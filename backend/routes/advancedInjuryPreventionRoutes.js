@@ -4,7 +4,7 @@
 const express = require('express');
 const router = express.Router();
 const advancedInjuryPreventionService = require('../services/advancedInjuryPreventionService');
-const auth = require('../middleware/auth');
+const { verifyToken } = require('../middleware/auth');
 const multer = require('multer');
 const { body, param, validationResult } = require('express-validator');
 
@@ -41,7 +41,7 @@ const validateRequest = (req, res, next) => {
  * @access Private
  */
 router.post('/analyze-movement', [
-  auth,
+  verifyToken,
   upload.single('image'),
   body('exerciseType').optional().isString().withMessage('Exercise type must be a string'),
   body('bodyPart').optional().isString().withMessage('Body part must be a string'),
@@ -92,7 +92,7 @@ router.post('/analyze-movement', [
  * @access Private
  */
 router.post('/rehabilitation-plan', [
-  auth,
+  verifyToken,
   body('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   body('injuryRisks').isArray().withMessage('Injury risks must be an array'),
   body('injuryRisks.*').isString().withMessage('Each injury risk must be a string'),
@@ -136,7 +136,7 @@ router.post('/rehabilitation-plan', [
  * @access Private
  */
 router.get('/rehabilitation-plan/:athleteId', [
-  auth,
+  verifyToken,
   param('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   validateRequest
 ], async (req, res) => {
@@ -190,7 +190,7 @@ router.get('/rehabilitation-plan/:athleteId', [
  * @access Private
  */
 router.post('/preventive-program', [
-  auth,
+  verifyToken,
   body('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   body('riskFactors').isArray().withMessage('Risk factors must be an array'),
   body('riskFactors.*').isString().withMessage('Each risk factor must be a string'),
@@ -234,7 +234,7 @@ router.post('/preventive-program', [
  * @access Private
  */
 router.get('/preventive-program/:athleteId', [
-  auth,
+  verifyToken,
   param('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   validateRequest
 ], async (req, res) => {
@@ -282,7 +282,7 @@ router.get('/preventive-program/:athleteId', [
  * @access Private
  */
 router.post('/analyze-load', [
-  auth,
+  verifyToken,
   body('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   body('sessions').isArray().withMessage('Sessions must be an array'),
   body('sessions.*.date').isISO8601().withMessage('Session date must be valid ISO date'),
@@ -327,7 +327,7 @@ router.post('/analyze-load', [
  * @access Private
  */
 router.get('/risk-history/:athleteId', [
-  auth,
+  verifyToken,
   param('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   validateRequest
 ], async (req, res) => {
@@ -374,7 +374,7 @@ router.get('/risk-history/:athleteId', [
  * @access Private
  */
 router.post('/batch-analysis', [
-  auth,
+  verifyToken,
   upload.array('images', 10), // Max 10 images
   body('metadata').isArray().withMessage('Metadata must be an array'),
   validateRequest
@@ -442,7 +442,7 @@ router.post('/batch-analysis', [
  * @access Private
  */
 router.get('/analytics/:athleteId', [
-  auth,
+  verifyToken,
   param('athleteId').isMongoId().withMessage('Invalid athlete ID'),
   validateRequest
 ], async (req, res) => {

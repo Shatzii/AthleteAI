@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/AthleteAI/static/css/main.c59ade77.css",
+    "main.css": "/AthleteAI/static/css/main.a39bad27.css",
     "main.js": "/AthleteAI/static/js/main.fd75d717.js",
     "static/css/26.d518e347.chunk.css": "/AthleteAI/static/css/26.d518e347.chunk.css",
     "static/js/26.d184a197.chunk.js": "/AthleteAI/static/js/26.d184a197.chunk.js",
@@ -21,7 +21,7 @@
     "index.html": "/AthleteAI/index.html"
   },
   "entrypoints": [
-    "static/css/main.c59ade77.css",
+    "static/css/main.a39bad27.css",
     "static/js/main.fd75d717.js"
   ]
 }
